@@ -1,0 +1,12 @@
+.cards{
+    gap: 10px;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: row;
+    width: inherit;
+    height: inherit;
+    scroll-snap-type: x mandatory;
+}
+.cards div{
+    scroll-snap-align: start;
+}
