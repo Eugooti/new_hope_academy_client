@@ -1,43 +1,18 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {CRUDMethods} from "../../CRUD/index.js";
 
 export const newFeeItem=createAsyncThunk(
     "new/feeItem",
     async (feeItem,{rejectWithValue})=>{
-        try {
-            const [status,result]=await makeRequest({
-                url:"/fee/create",
-                method:'POST',
-                data:feeItem,
-                use_jwt:true
-            })
-
-            if (status === 200)return result
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.create(feeItem,'/fee/create',{rejectWithValue})
     }
 )
 
 export const getFeeItems=createAsyncThunk(
     "read/feeItems",
     async (_,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:'/fee/read',
-                method:"GET",
-                use_jwt:true,
-            })
-
-            if (status === 200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.read('/fee/read',{rejectWithValue});
     }
 )
 
@@ -45,37 +20,14 @@ export const getFeeItems=createAsyncThunk(
 export const updateFeeItem=createAsyncThunk(
     "update/feeItem",
     async ({id, formData},{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:`/fee/update/${id}`,
-                method:"PUT",
-                data: formData,
-                use_jwt:true
-            })
-            if (status === 200) return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.update(formData,`/fee/update/${id}`,{rejectWithValue});
     }
 )
 
 export const deleteFeeItem = createAsyncThunk(
     "feeItem/remove",
     async (id, { rejectWithValue }) => {
-        try {
-            const [status,result] = await makeRequest({
-                url:`/fee/delete/${id}`,
-                method:"DELETE",
-                use_jwt:true
-            })
-            if (status===200)return result;
-            else return rejectWithValue(result);
-
-        } catch (error) {
-            return rejectWithValue(error);
-        }
+        return await CRUDMethods.remove(`/fee/delete/${id}`,{rejectWithValue});
     }
 );
 

@@ -89,7 +89,7 @@ const TeacherProfile = () => {
                 <div className="flex items-center space-x-4 mb-4">
                     <Avatar size={100} src={dp} />
                     <div>
-                        <Title level={3} className="mb-0">{`${user?.firstName} ${user?.lastName}`}</Title>
+                        <Title level={3} className="mb-0">{`${user?.firstname} ${user?.lastName}`}</Title>
                         <Text type="secondary">{teacher.designation}</Text>
                     </div>
                 </div>
@@ -112,7 +112,7 @@ const TeacherProfile = () => {
                         <Title level={4}>Professional Information</Title>
                         <List>
                             <List.Item>
-                                <Text strong>Subjects: </Text><Text>{user?.subjects.join(', ')}</Text>
+                                <Text strong>Roles: </Text><Text>{user?.roles.join(', ').toUpperCase()}</Text>
                             </List.Item>
                             <List.Item>
                                 <Text strong>Experience: </Text><Text>{teacher.experience}</Text>

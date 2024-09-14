@@ -1,81 +1,31 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {CRUDMethods} from "../../CRUD/index.js";
 
 export const createDepartment = createAsyncThunk(
     "department/create",
     async (deptData,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:"department/create",
-                method:"POST",
-                data:deptData,
-                use_jwt:true
-            })
-            if (status===200)return result;
-            else return rejectWithValue(result)
+        return await CRUDMethods.create(deptData,'department/create',{rejectWithValue})
 
-        }catch (error) {
-            return rejectWithValue(error)
-        }
     }
 )
 
 export const fetchDepartments = createAsyncThunk(
     "department/read",
     async (_,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:'department/read',
-                method:"GET",
-                use_jwt:true
-            })
-
-            if (status===200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.read('department/read',{rejectWithValue})
     }
 )
 export const updateDepartment = createAsyncThunk(
     "department/update",
     async ({id,deptData},{rejectWithValue})=>{
-        try {
-
-            const [status,result]=await makeRequest({
-                url:`department/update/${id}`,
-                method:'PUT',
-                data:deptData,
-                use_jwt:true
-            })
-
-            if (status===200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.update(deptData,`department/update/${id}`,{rejectWithValue})
     }
 )
 export const deleteDepartment = createAsyncThunk(
     "department/delete",
     async (id,{rejectWithValue})=>{
-        try {
-
-            const [status,result]=await makeRequest({
-                url:`department/update/${id}`,
-                method:'DELETE',
-                use_jwt:true
-            })
-
-            if (status===200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.remove(`department/delete/${id}`,{rejectWithValue})
     }
 )
 

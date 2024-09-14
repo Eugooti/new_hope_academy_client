@@ -15,6 +15,7 @@ import learnerSlice from "./Reducers/AdminSlice/LearnerSlice.js";
 import attendanceSlice from "./Reducers/AdminSlice/attendanceSlice.js";
 import feeSlice from "./Reducers/AdminSlice/FeeSlice.js";
 import scheduleSlice from "./Reducers/AdminSlice/scheduleSlice.js";
+import vacanciesSlice from "./Reducers/hrmSlice/vacanciesSlice.js";
 
 
 const rootReducers = combineReducers({
@@ -24,7 +25,7 @@ const rootReducers = combineReducers({
     bookBorrowing:bookBorrowingReducer,
     staff:staffSlice,
     roles:rolesSlice,
-    grades:classSlice,
+    classroom:classSlice,
     procurement:procurementSlice,
     coursebooks:courseBookSlice,
     clinic:clinicSlice,
@@ -32,7 +33,8 @@ const rootReducers = combineReducers({
     learners:learnerSlice,
     attendance:attendanceSlice,
     fee:feeSlice,
-    schedule:scheduleSlice
+    schedule:scheduleSlice,
+    vacancies:vacanciesSlice,
 });
 
 export default (state = initialState, action) => rootReducers(state, action);

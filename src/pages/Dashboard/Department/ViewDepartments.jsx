@@ -1,78 +1,115 @@
-import  { useState } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Typography, Select } from 'antd';
+import {useEffect, useState} from 'react';
+import {Form, Input, message, Popconfirm, Select, Skeleton, Table, Typography} from 'antd';
+import {useDispatch, useSelector} from "react-redux";
+import {
+    deleteDepartment,
+    fetchDepartments,
+    updateDepartment
+} from "../../../redux/Reducers/AdminSlice/departmentSlice.js";
+import {readStaff} from "../../../redux/Reducers/AdminSlice/staffSlice.js";
+import Button from "antd/es/button/index.js";
+import index from "../Index.jsx";
 
-const { Option } = Select;
-
-const originData = [];
-for (let i = 0; i < 100; i++) {
-    originData.push({
-        key: i.toString(),
-        name: `Edward ${i}`,
-        age: 32,
-        address: `London Park no. ${i}`,
-    });
-}
-
-const EditableCell = ({
-                          // eslint-disable-next-line react/prop-types
-                          editing,
-                          // eslint-disable-next-line react/prop-types
-                          dataIndex,
-                          // eslint-disable-next-line react/prop-types
-                          title,
-                          // eslint-disable-next-line react/prop-types
-                          inputType,
-                          // eslint-disable-next-line no-unused-vars,react/prop-types
-                          record,
-                          // eslint-disable-next-line no-unused-vars,react/prop-types
-                          index,
-                          // eslint-disable-next-line react/prop-types
-                          children,
-                          ...restProps
-                      }) => {
-    let inputNode;
-    if (inputType === 'number') {
-        inputNode = <InputNumber />;
-    } else if (inputType === 'select') {
-        inputNode = (
-            <Select size={"large"}>
-                <Option value="option1">Option 1</Option>
-                <Option value="option2">Option 2</Option>
-                <Option value="option3">Option 3</Option>
-            </Select>
-        );
-    } else {
-        inputNode = <Input size={"large"} />;
-    }
-
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <Form.Item
-                    name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    {inputNode}
-                </Form.Item>
-            ) : (
-                children
-            )}
-        </td>
-    );
-};
 
 const ViewDepartments = () => {
+
+    const {  staffList } = useSelector((state) => state.staff);
+    const dispatch2=useDispatch();
+
+    useEffect(() => {
+        dispatch2(readStaff());
+    }, [dispatch2]);
+
+    const [dataSource, setDataSource] = useState([]);
+
+    useEffect(() => {
+        if (staffList) {
+            const formattedData = staffList?.result.map((staff) => ({
+                label:staff.gender === "Male"?`Mr. ${staff.firstname} ${staff.lastName}`:`Mrs. ${staff.firstname} ${staff.lastName}`,
+                value:staff.gender === "Male"?`Mr. ${staff.firstname} ${staff.lastName}`:`Mrs. ${staff.firstname} ${staff.lastName}`,
+            }));
+            setDataSource(formattedData);
+        }
+    }, [staffList]);
+
+    const EditableCell = ({
+                              // eslint-disable-next-line react/prop-types
+                              editing,
+                              // eslint-disable-next-line react/prop-types
+                              dataIndex,
+                              // eslint-disable-next-line react/prop-types
+                              title,
+                              // eslint-disable-next-line react/prop-types
+                              inputType,
+                              // eslint-disable-next-line no-unused-vars,react/prop-types
+                              record,
+                              // eslint-disable-next-line no-unused-vars,react/prop-types
+                              index,
+                              // eslint-disable-next-line react/prop-types
+                              children,
+                              ...restProps
+                          }) => {
+        let inputNode;
+        if (inputType === 'select') {
+            inputNode = (
+                <Select
+                    size={"large"}
+                    options={dataSource}
+                    placeholder="Mr. John Tom"
+                />
+            );
+        } else {
+            inputNode = <Input size={"large"} />;
+        }
+
+        return (
+            <td {...restProps}>
+                {editing ? (
+                    <Form.Item
+                        name={dataIndex}
+                        style={{
+                            margin: 0,
+                        }}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Input ${title}!`,
+                            },
+                        ]}
+                    >
+                        {inputNode}
+                    </Form.Item>
+                ) : (
+                    children
+                )}
+            </td>
+        );
+    };
+
+
     const [form] = Form.useForm();
-    const [data, setData] = useState(originData);
     const [editingKey, setEditingKey] = useState('');
+
+    const dispatch = useDispatch();
+
+    const {departments,loading} = useSelector((state)=>state.department)
+    const [departmentData, setDepartmentData] = useState();
+    useEffect(() => {
+        if (departments && departments.success){
+            const mappedDepartment=departments.result.map((item,index)=>({
+                key: index,
+                name: item.name,
+                departmentHead: item.departmentHead,
+                id:item._id
+
+            }))
+            setDepartmentData(mappedDepartment)
+        }
+    }, [departments]);
+
+    useEffect(() => {
+        dispatch(fetchDepartments())
+    }, [dispatch]);
 
     const isEditing = (record) => record.key === editingKey;
 
@@ -89,30 +126,53 @@ const ViewDepartments = () => {
     const cancel = () => {
         setEditingKey('');
     };
-
+    const [messageApi, contextHolder] = message.useMessage();
     const save = async (key) => {
         try {
             const row = await form.validateFields();
-            const newData = [...data];
+            const newData = [...departmentData];
             const index = newData.findIndex((item) => key === item.key);
 
             if (index > -1) {
                 const item = newData[index];
-                newData.splice(index, 1, {
-                    ...item,
-                    ...row,
-                });
-                setData(newData);
-                setEditingKey('');
+                const id = item.id
+                await dispatch(updateDepartment({id, deptData:row})).then(action=>{
+                    action.error?
+                        messageApi.error(action.payload.message):
+                        messageApi.success(action.payload.message).then(()=>{
+                            newData.splice(index, 1, {
+                                ...item,
+                                ...row,
+                            });
+                            setDepartmentData(newData);
+                            setEditingKey('');
+                        })
+                })
+
             } else {
                 newData.push(row);
-                setData(newData);
+                setDepartmentData(newData);
                 setEditingKey('');
+
             }
         } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
         }
     };
+
+    const deletion = async (key) => {
+        console.log(key)
+        const newData = [...departmentData];
+        const id = newData[key].id;
+        await dispatch(deleteDepartment(id)).then(action=>{
+            action.error?
+                messageApi.error(action.payload.message):
+                messageApi.success(action.payload.message).then(()=>{
+                    newData.splice(key, 1)
+                    setDepartmentData(newData)
+                })
+        })
+    }
 
     const columns = [
         {
@@ -122,19 +182,13 @@ const ViewDepartments = () => {
             editable: true,
         },
         {
-            title: 'age',
-            dataIndex: 'age',
-            width: '15%',
-            editable: true,
-        },
-        {
             title: 'Department Head',
-            dataIndex: 'address',
-            width: '40%',
+            dataIndex: 'departmentHead',
+            width: '35%',
             editable: true,
         },
         {
-            title: 'operation',
+            title: 'Update',
             dataIndex: 'operation',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -159,6 +213,21 @@ const ViewDepartments = () => {
                 );
             },
         },
+        {
+            title: 'Delete',
+            dataIndex: 'delete',
+            render: (_, record) => {
+                return (
+                    <>
+                        <Popconfirm title="Sure to cancel?" onConfirm={()=>deletion(record.key)}>
+                            <Button type="text" danger>
+                                Delete
+                            </Button>
+                        </Popconfirm>
+                    </>
+                )
+            }
+        },
     ];
 
     const mergedColumns = columns.map((col) => {
@@ -169,7 +238,7 @@ const ViewDepartments = () => {
             ...col,
             onCell: (record) => ({
                 record,
-                inputType: col.dataIndex === 'age' ? 'number' : col.dataIndex === 'address' ? 'select' : 'text',
+                inputType: col.dataIndex === 'departmentHead' ? 'select' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
@@ -178,22 +247,28 @@ const ViewDepartments = () => {
     });
 
     return (
-        <Form form={form} component={false}>
-            <Table
-                components={{
-                    body: {
-                        cell: EditableCell,
-                    },
-                }}
-                bordered
-                dataSource={data}
-                columns={mergedColumns}
-                rowClassName="editable-row"
-                pagination={{
-                    onChange: cancel,
-                }}
-            />
-        </Form>
+        <>
+            {contextHolder}
+
+                 <Form form={form} component={false}>
+                        <Table
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            bordered
+                            dataSource={departmentData}
+                            columns={mergedColumns}
+                            rowClassName="editable-row"
+                            pagination={{
+                                onChange: cancel,
+                            }}
+                        />
+                    </Form>
+
+
+        </>
     );
 };
 

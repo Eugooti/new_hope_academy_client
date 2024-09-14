@@ -27,13 +27,9 @@ const NewStaff = () => {
     const onFormFinish = async (values) => {
         const userData = {
             ...values,
-            createdBy: user?.email
+            createdBy: user.employeeNo
         };
-
-
-        console.log(userData);
         await dispatch(addStaff(userData)).then((action) => {
-          console.log(action);
           if (action.error) {
             messageApi.error(action.payload?.message);
           } else {
@@ -59,11 +55,32 @@ const NewStaff = () => {
     }))
 
     const schoolRoles = [
-        'Principal', 'Vice Principal', 'Teacher', 'Student', 'Parent', 'Administrator',
-        'Counselor', 'Librarian', 'Coach', 'Janitor', 'Secretary', 'IT Support',
-        'Nurse', 'Cafeteria Staff', 'Security Guard', 'Board Member', 'Volunteer',
-        'Bus Driver', 'Teacher Assistant'
+        'admin', 'principal', 'vicePrincipal', 'administrativeStaff', 'classTeacher', 'teachingStaff',
+        'departmentHead', 'teacher', 'teachingAssistant', 'guidanceCounselor', 'specialEducationTeacher', 'schoolNurse',
+        'itDirector', 'itSupportStaff', 'librarian', 'facilitiesManager', 'custodialStaff',
+        'athleticDirector', 'coach','clubAdvisor','financeDirector','accountant','hrDirector','hrStaff','cafeteriaManager'
+        ,'cafeteriaStaff','publicRelationsOfficer','ptaMember','securityDirector','securityGuard','transportationDirector'
+        ,'busDriver','transportationCoordinator','student','parent','guest'
     ];
+
+    const schRoles = [
+        {label:"Admin",value:"admin"},{label: 'Principal',value:"principal"},{label: 'vice Principal',value:"vicePrincipal"},
+        {label:"Administrative Staff",value:"administrativeStaff"},{label: 'ClassTeacher',value:"classTeacher"},
+        {label: 'Teaching Staff',value:"teachingStaff"}, {label:"Department Head",value:"departmentHead"},
+        {label: 'Teacher',value:"teacher"},{label: 'Teaching Assistant',value:"teachingAssistant"},
+        {label:"Guidance Counselor",value:"guidanceCounselor"},{label: 'Special Education Teacher',value:"specialEducationTeacher"},
+        {label: 'School Nurse',value:"schoolNurse"}, {label:"IT Director",value:"itDirector"},{label: 'IT SupportStaff',value:"itSupportStaff"},
+        {label: 'Librarian',value:"librarian"},{label:"Facilities Manager",value:"facilitiesManager"},{label:"Custodial Staff",value:"custodialStaff"},
+        {label:"Athletic Director",value:"athleticDirector"},{label:"Coach",value:"coach"},{label:"Club Advisor",value:"clubAdvisor"},
+        {label:"Finance Director",value:"financeDirector"},
+        {label:"Accountant",value:"accountant"},{label:"HR Director",value:"hrDirector"},{label:"HR Staff",value:"hrStaff"},
+        {label:"Cafeteria Manager",value:"cafeteriaManager"},
+        {label:"Cafeteria Staff",value:"cafeteriaStaff"},{label:"Public Relations Officer",value:"publicRelationsOfficer"},
+        {label:"PTA Member",value:"ptaMember"},{label:"Security Director",value:"securityDirector"},
+        {label:"Security Guard",value:"securityGuard"},{label:"Transportation Director",value:"transportationDirector"},
+        {label:"Bus Driver",value:"busDriver"},{label:"Transportation Coordinator",value:"transportationCoordinator"},
+        {label:"Student",value:"student"},{label:"Parent",value:"parent"},{label:"Guest",value:"guest"}
+    ]
 
     const roles = schoolRoles.map((item)=>({
         value:item,
@@ -99,7 +116,7 @@ const NewStaff = () => {
                 onFinishFailed={onFormFinishFailed}
             >
                 <div className='grid md:grid-cols-2 gap-x-8'>
-                    <Form.Item label="First Name" name="firstName" rules={[{ required: true, message: 'Required Field' }]}>
+                    <Form.Item label="First Name" name="firstname" rules={[{ required: true, message: 'Required Field' }]}>
                         <Input prefix={<UserOutlined />} size='large' />
                     </Form.Item>
                     <Form.Item label="Last Name" name="lastName" rules={[{ required: true, message: 'Required Field' }]}>
@@ -126,27 +143,27 @@ const NewStaff = () => {
                     <Form.Item label="Salary" name="salary" rules={[{ required: true, message: 'Required Field' }]}>
                         <Input prefix={<MoneyCollectOutlined />} size='large' />
                     </Form.Item>
-                    <Form.Item label="Bank Account" name="accountNumber" rules={[{ required: true, message: 'Required Field' }]}>
+                    <Form.Item label="Bank Account" name="bankAccount" rules={[{ required: true, message: 'Required Field' }]}>
                         <Input prefix={<BankOutlined />} size='large' />
                     </Form.Item>
-                    <Form.Item
-                        rules={[{ required: true, message: 'Required Field' }]}
-                        label="Subjects" name="subjects">
-                        <Select
-                            options={Subjects}
-                            placeholder="Select Subjects"
-                            mode={"tags"}
-                            size={"large"}
-                            className='w-full'
-                            tokenSeparators={[',']}
-                        />
-                    </Form.Item>
+                    {/*<Form.Item*/}
+                    {/*    rules={[{ required: true, message: 'Required Field' }]}*/}
+                    {/*    label="Subjects" name="subjects">*/}
+                    {/*    <Select*/}
+                    {/*        options={Subjects}*/}
+                    {/*        placeholder="Select Subjects"*/}
+                    {/*        mode={"tags"}*/}
+                    {/*        size={"large"}*/}
+                    {/*        className='w-full'*/}
+                    {/*        tokenSeparators={[',']}*/}
+                    {/*    />*/}
+                    {/*</Form.Item>*/}
                     <Form.Item label="Roles" name="roles">
                         <Select
                             mode={"tags"}
                             placeholder="Select Roles"
                             size={"large"}
-                            options={roles}
+                            options={schRoles}
                             tokenSeparators={[',']}
                             style={{ width: '100%' }}
                         />

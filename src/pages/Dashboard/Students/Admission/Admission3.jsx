@@ -114,8 +114,9 @@ const StudentAdmission = () => {
         const newLearner={
             ...student,
             parents,
-            admittedBy: user?.staffId
+            admittedBy: user?.employeeNo
         }
+        console.log({newLearner:newLearner})
         await dispatch(admitLearner(newLearner)).then((action) => {
             console.log(action)
             if (action.error) {
@@ -324,6 +325,7 @@ const StudentAdmission = () => {
                         <Form.Item
                             label={"Address"}
                             name='address'
+                            rules={[{ required: true, message: 'Address is Required.' }]}
                         >
                             <Input
                                 size={"large"}
@@ -333,6 +335,7 @@ const StudentAdmission = () => {
                         <Form.Item
                             name='disability'
                             label="Disability Status"
+                            rules={[{ required: true, message: 'Required field' }]}
                         >
                             <Select
                                 size={"large"}

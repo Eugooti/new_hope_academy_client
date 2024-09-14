@@ -88,7 +88,7 @@ export const DashboardProvider = () => {
             getItem('New Staff', '8', <PersonAddAlt1Icon />, null, '/new-staff'),
             getItem('View Staff', '9', <ListIcon />, null, '/view-staff')
         ]),
-        getItem('Classes', 'sub5', <ClassIcon />, [
+        getItem('classrooms', 'sub5', <ClassIcon />, [
             getItem('Create Class', '10', null, null, '/create-class'),
             getItem('View Class', '11', null, null, '/view-class')
         ]),

@@ -50,7 +50,7 @@ const Login = () => {
 
                 <>
                     {contextHolder}
-                    <div style={{background:theme.bg,color:theme.text, minHeight:'100vh'}} className=' grid grid-cols-1 lg:gap-5 lg:grid-cols-2 items-center justify-items-center '>
+                    <div style={{background:theme.bg,color:theme.text, minHeight:'100vh'}} className=' grid grid-cols-1 lg:gap-5 md:grid-cols-2 items-center justify-items-center '>
                         <Heading title={'New Hope Academy'} subtitle={'School Portal'}/>
                         <div className='w-full'>
                             <Card style={{background:theme.uiElements}} className='w-full'>

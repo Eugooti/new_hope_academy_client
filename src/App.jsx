@@ -22,11 +22,11 @@ import CreateCourseBook from "./pages/Dashboard/CourseBook/CreateCourseBook.jsx"
 import ViewDepartments from "./pages/Dashboard/Department/ViewDepartments.jsx";
 import Dashboard from "./pages/Dashboard/Index.jsx";
 import NewProcurement from "./pages/Dashboard/Procurement/NewProcurement.jsx";
-import CreatClass from "./pages/Dashboard/Classes/CreatClass.jsx";
+import CreatClassroom from "./pages/Dashboard/classrooms/CreatClassroom.jsx";
 import LeaseBook from "./pages/Dashboard/Library/LeaseBook.jsx";
 import UnreturnedBooks from "./pages/Dashboard/Library/UnreturnedBooks.jsx";
 import { DashboardProvider } from "./pages/Dashboard/Dashboard.jsx";
-import AllClasses from "./pages/Dashboard/Classes/AllGradeList.jsx";
+import AllClasses from "./pages/Dashboard/classrooms/AllGradeList.jsx";
 import FeeSetting from "./pages/Dashboard/fee/FeeSetting.jsx";
 import TeacherProfile from "./pages/Dashboard/Staff/Profile.jsx";
 import FeeStructure from "./pages/Dashboard/fee/FeeStructure.jsx";
@@ -63,7 +63,7 @@ function App() {
               <Route path="/create-course-book" element={<CreateCourseBook />} />
               <Route path="/view-departments" element={<ViewDepartments />} />
               <Route path="/new-item" element={<NewProcurement />} />
-              <Route path="/create-class" element={<CreatClass />} />
+              <Route path="/create-class" element={<CreatClassroom />} />
               <Route path="/lease-book" element={<LeaseBook />} />
               <Route path="/view-leased-books" element={<UnreturnedBooks />} />
               <Route path="/view-staff" element={<StaffList />} />

@@ -19,9 +19,9 @@ const StaffList = () => {
 
     useEffect(() => {
         if (staffList) {
-            const formattedData = staffList?.response.map((staff, index) => ({
+            const formattedData = staffList?.result.map((staff, index) => ({
                 key: index + 1,
-                name: `${staff.firstName} ${staff.lastName}`,
+                name: `${staff.firstname} ${staff.lastName}`,
                 gender: staff.gender,
                 phone: staff.phone
             }));
@@ -127,9 +127,9 @@ const StaffList = () => {
             key: 'name',
             width: '33%',
             ...getColumnSearchProps('name'),
-            render: (text, record) => (
+            render: (text) => (
                 <>
-                    <Avatar>E</Avatar> {text}
+                    <Avatar>{text[0]}</Avatar> {text}
                 </>
             ),
         },

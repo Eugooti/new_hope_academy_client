@@ -1,65 +1,28 @@
 import {createSlice,createAsyncThunk} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {CRUDMethods} from '../../CRUD/index.js'
 
 
 export const addStaff=createAsyncThunk(
     "staff/create",
     async (staffData,{rejectWithValue})=>{
-        try {
-            const [status, response]=await makeRequest({
-                url: `/staff/create`,
-                method:'POST',
-                data:staffData,
-                use_jwt: true, // Assuming authentication is required
-            })
+        return await CRUDMethods.create(staffData,'/staff/create',{rejectWithValue})
 
-            if (status === 200) {
-                return response;
-            } else {
-                return rejectWithValue(response);
-            }
-        }catch (error) {
-            return rejectWithValue(error);
-        }
     }
 )
 
 export const getUserById = createAsyncThunk(
-    "getById",
+    "staff/getById",
     async (id,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:`/staff/read/${id}`,
-                method:'GET',
-                use_jwt:true
-            })
+        return CRUDMethods.read(`/staff/read/${id}`,{rejectWithValue})
 
-            if (status === 200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return  rejectWithValue(error)
-
-        }
     }
 )
 
 export const readStaff=createAsyncThunk(
     "staff/read",
     async (_,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:'/staff/read',
-                method:"GET",
-                use_jwt:true
-            })
-
-            if (status === 200)return result;
-            else return rejectWithValue(result)
-        }catch (error) {
-            return  rejectWithValue(error)
-        }
+        return CRUDMethods.read('/staff/read',{rejectWithValue})
     }
 )
 

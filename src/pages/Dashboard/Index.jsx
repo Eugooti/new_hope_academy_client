@@ -51,9 +51,9 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (departments && departments.success){
-            const mappedDepartment=departments.response.map((item,index)=>({
+            const mappedDepartment=departments.result.map((item,index)=>({
                 key:index,
-                name:item.title,
+                name:item.name,
                 id:item.id
             }))
             setDepartmentData(mappedDepartment)

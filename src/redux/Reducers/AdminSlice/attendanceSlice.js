@@ -1,22 +1,11 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {CRUDMethods} from "../../CRUD/index.js";
 
 export const createLearnerAttendanceRecord=createAsyncThunk(
     "create/attendance",
     async (data,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:"/attendance/create",
-                method: "POST",
-                data:data,
-                use_jwt:true
-            })
-            if (status === 200) return result;
-            return rejectWithValue(result);
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.create(data,"/attendance/create",{rejectWithValue})
     }
 )
 
@@ -24,18 +13,7 @@ export const createLearnerAttendanceRecord=createAsyncThunk(
 export const markAttendance=createAsyncThunk(
     "mark/attendance",
     async ({id,data},{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:`/attendance/mark/${id}`,
-                method:"PUT",
-                data:data,
-                use_jwt:true
-            })
-            if (status === 200) return result;
-            return rejectWithValue(result);
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.update(data,`/attendance/mark/${id}`,{rejectWithValue})
     }
 )
 

@@ -1,23 +1,13 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {CRUDMethods} from "../../CRUD/index.js";
 
 
 export const createLearnerClinicRecord=createAsyncThunk(
     "clinic/create-learner",
     async (data,{rejectWithValue})=>{
-        try {
-            const [status, result] = await makeRequest({
-                url:"/clinic/create",
-                method:"POST",
-                data,
-                use_jwt:true
-            })
-            if (status === 200)return result;
-            else return rejectWithValue(result)
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.create(data,'/clinic/create',{rejectWithValue})
+
     }
 )
 
@@ -25,56 +15,21 @@ export const createLearnerClinicRecord=createAsyncThunk(
 const examineLearner=createAsyncThunk(
     "clinic/treat",
     async ({id,patientData},{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:`clinic/create/${id}`,
-                method:'POST',
-                data:patientData,
-                use_jwt:true
-            })
-
-            if (status === 200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.update( patientData,`clinic/create/${id}`,{rejectWithValue})
     }
 )
 
 const learnerRecord=createAsyncThunk(
     "clinic/read_one_learner",
     async (id,{rejectWithValue})=>{
-        try {
-            const [status,result]= await makeRequest({
-                url:`clinic/read/${id}`,
-                method:"GET",
-                use_jwt:true
-            })
-
-            if (status === 200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.read(`clinic/read/${id}`,{rejectWithValue})
     }
 )
 
 const learnersRecords=createAsyncThunk(
     "clinic/learners_record",
     async (_,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:"clinic/read",
-                method:"GET",
-                use_jwt:true
-            })
-            if (status === 200) return result;
-            else return rejectWithValue(result)
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.read("clinic/read",{rejectWithValue})
     }
 )
 

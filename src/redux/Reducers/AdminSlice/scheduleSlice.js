@@ -1,43 +1,20 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {CRUDMethods} from "../../CRUD/index.js";
 
 export const createSchedule = createAsyncThunk(
     "schedule/create",
     async (data,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:'/schedule/create',
-                method:"POST",
-                data:data,
-                use_jwt:true
-            })
+        return await CRUDMethods.create(data,"/schedule/create",{rejectWithValue})
 
-            if (status === 200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
     }
 )
 
 
 export const readUserSchedule = createAsyncThunk(
     "readUser/schedule",
-    async (uID,{rejectWithValue})=>{
-        try {
-            const [status,result] = await makeRequest({
-                url:`/schedule/read/${uID}`,
-                method:"GET",
-                use_jwt:true
-            })
-            if (status === 200)return  result;
-            else return rejectWithValue(result);
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+    async (id,{rejectWithValue})=>{
+        return await CRUDMethods.read(`users/read/${id}`,{rejectWithValue})
     }
 )
 

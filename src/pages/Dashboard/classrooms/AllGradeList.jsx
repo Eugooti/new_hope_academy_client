@@ -10,29 +10,30 @@ import {readClasses} from "../../../redux/Reducers/AdminSlice/classSlice.js";
 const AllClasses = () => {
 
     const dispatch=useDispatch();
-    const {loading,classList,error}=useSelector((state)=>state.grades)
+    const {classroomList}=useSelector((state)=>state.classroom)
 
 
     useEffect( () => {
         dispatch(readClasses())
     }, [dispatch]);
 
-    console.log(classList&&classList)
-    console.log(error && error)
+    const [dataSource, setDataSource] = useState([])
 
-    const [dataSource, setDataSource] =useState( [
-        {key:1,name:"Play Group",gender:'Mr. Kevin',male:10,female:15,total:25},
-        {key:2,name:"PP1",gender:'Mr. Tom',phone:"0723720516",male:10,female:15,total:25},
-        {key:3,name:"PP2",gender:'Mrs. Jane',phone:"0723720516",male:10,female:15,total:25},
-        {key:4,name:"Grade One",gender:'Mrs. Jil',phone:"0723720516",male:10,female:15,total:25},
-        {key:5,name:"Grade Two",gender:'Mr. Ken',phone:"0723720516",male:10,female:15,total:25},
-        {key:6,name:"Grade Three",gender:'Mr. Eugene',phone:"0723720516",male:10,female:15,total:25},
-        {key:7,name:"Grade Four",gender:'Mrs. Betty',phone:"0723720516",male:10,female:15,total:25},
-        {key:8,name:"Grade Five",gender:'Mr. Rose',phone:"0723720516",male:10,female:15,total:25},
-        {key:9,name:"Grade Six",gender:'Mr. Steve',phone:"0723720516",male:10,female:15,total:25},
-        {key:10,name:"Grade Seven",gender:'Mrs. June',phone:"0723720516",male:10,female:15,total:25},
-        {key:11,name:"Grade Eight",gender:'Mr. Zing',phone:"0723720516",male:10,female:15,total:25},
-    ]);
+    useEffect(()=>{
+        if (classroomList) {
+            const formatData = classroomList?.result.map((classroom,index) => ({
+                key: index,
+                name:classroom.classroomName,
+                gender: classroom.classroomFacilitator,
+                male:classroom.population.male,
+                female:classroom.population.male,
+                total:classroom.population.male,
+            }))
+
+            setDataSource(formatData)
+        }
+    },[classroomList])
+
 
 
     const [searchText, setSearchText] = useState('');
@@ -153,14 +154,14 @@ const AllClasses = () => {
             title: 'Grade',
             dataIndex: 'name',
             key: 'name',
-            width: '20%',
+            width: '15%',
             ...getColumnSearchProps('name'),
         },
         {
             title: 'Class Teacher',
             dataIndex: 'gender',
             key: 'gender',
-            width: '20%',
+            width: '30%',
             ...getColumnSearchProps('gender'),
         },
         {

@@ -63,11 +63,11 @@ const initialState={
         role_data:null,
         roles:null
     },
-    grades:{
+    classrooms:{
         loading:false,
         error: null,
-        classes_data:null,
-        classList:null
+        classroom_data:null,
+        classroomList:null
     },
     events:{
         loading:false,
@@ -106,6 +106,20 @@ const initialState={
         userSchedules:null,
         createdSchedule:null,
         error:null
+    },
+    human_resource:{
+        loading:false,
+        error:null,
+        vacancy:null,
+        vacanciesList:null,
+        complaint:null,
+        complaintsList:null,
+        interview:null,
+        interviewList:null,
+        payroll:null,
+        payrollList:null,
+        staffAttendance:null,
+        staffAttendanceList:null,
     }
 
 }

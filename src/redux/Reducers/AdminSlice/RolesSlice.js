@@ -1,77 +1,30 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {CRUDMethods} from "../../CRUD/index.js";
 
 const createRole=createAsyncThunk(
     "roles/create",
     async (roleData,{rejectWithValue})=>{
-        try {
-            const [status,result]=await makeRequest({
-                url:`roles/create`,
-                method:'POST',
-                data:roleData,
-                use_jwt:true
-            })
-            if (status===200)return result
-            else return rejectWithValue(result)
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.create(roleData,`roles/create`,{rejectWithValue})
     }
 )
 
 const readRoles=createAsyncThunk(
     "role/read",
     async (_,{rejectWithValue})=>{
-        try {
-            const [status,result]=await makeRequest({
-                url:`roles/read`,
-                method:'GET',
-                use_jwt:true
-            })
-
-            if (status === 200) return result
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.read(`roles/read`,{rejectWithValue})
     }
 )
 const updateRole=createAsyncThunk(
     "roles/update",
     async ({id,data},{rejectWithValue})=>{
-        try {
-            const [status,result]=await makeRequest({
-                url:`roles/update/${id}`,
-                method:'PUT',
-                data:data,
-                use_jwt:true
-            })
-
-            if (status===200)return result;
-            else return rejectWithValue(result)
-
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.update(data,`roles/update/${id}`,{rejectWithValue})
     }
 )
 const deleteRole=createAsyncThunk(
     "roles/delete",
     async (id,{rejectWithValue})=>{
-        try {
-            const [status,result]=await makeRequest({
-                url:`roles/delete/${id}`,
-                method:"DELETE",
-                use_jwt:true
-            })
-
-            if (status===200)return result;
-            else return rejectWithValue(result)
-        }catch (error) {
-            return rejectWithValue(error)
-        }
+        return await CRUDMethods.remove(`roles/delete/${id}`,{rejectWithValue})
     }
 )
 

@@ -2,32 +2,24 @@ import {useTheme} from "../../../context/ThemeContext/ThemeContext.jsx";
 import Heading from "../../../components/heading/Heading.jsx";
 import {Form, Input, message, Select} from "antd";
 import {useForm} from "antd/es/form/Form.js";
-import {createClass} from "../../../redux/Reducers/AdminSlice/classSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {readStaff} from "../../../redux/Reducers/AdminSlice/staffSlice.js";
+import {getFromLocalStorage} from "../../../utils/LocalStorage/localStorage.jsx";
+import {createClass} from "../../../redux/Reducers/AdminSlice/classSlice.js";
 
-const CreatClass = () => {
+const CreatClassroom = () => {
     const {light,dark,lightTheme}=useTheme()
     const theme=!lightTheme?light:dark;
 
-    const {loading,classes_data,error}=useSelector((state)=>state.grades)
+    const {loading}=useSelector((state)=>state.classroom)
 
 
     const dispatch=useDispatch();
 
     const [form] = useForm();
     const [messageApi, contextHolder] = message.useMessage();
-    const onFormFinish = async (values) => {
-        // todo handle form finish
-        await dispatch(createClass(values)).then((action)=>{
-            action.error?
-                messageApi.error(action.payload.message):
-                messageApi.success(action.payload.message).then(()=>{
-                    form.resetFields()
-                })
-        })
-    };
+    const user = getFromLocalStorage('user')
 
     const onFormFinishFailed = (errorInfo) => {
         // todo handle form finish fail
@@ -45,13 +37,37 @@ const CreatClass = () => {
 
     useEffect(() => {
         if (staffList) {
-            const formattedData = staffList?.response.map((staff, index) => ({
-                label:`${staff.firstName} ${staff.lastName}`,
-                value:staff.staffId
+            const formattedData = staffList?.result.map((staff) => ({
+                label:staff.gender === "Male"?`Mr. ${staff.firstname} ${staff.lastName}`:`Mrs. ${staff.firstname} ${staff.lastName}`,
+                value: staff.employeeNo
             }));
             setDataSource(formattedData);
         }
     }, [staffList]);
+
+
+    const onFormFinish = async (values) => {
+        // todo handle form finish
+
+
+        const classTeacher = dataSource.find(item => item.value === values.classroomFacilitator)
+        const userData = {
+            ...values,
+            classroomFacilitator:classTeacher?.label,
+            employeeNo:classTeacher?.value,
+            createdBy: user.employeeNo
+        };
+
+        console.log(userData)
+
+        await dispatch(createClass(userData)).then((action)=>{
+            if (action.error) {
+                messageApi.error(action.payload?.message);
+            } else {
+                messageApi.success(action.payload?.message).then(() => form.resetFields());
+            }
+        })
+    };
 
     const rules={
         grade:[{required:true,message:"Required field"}],
@@ -76,26 +92,20 @@ const CreatClass = () => {
                             onFinishFailed={onFormFinishFailed}
                         >
                             <div className='grid md:grid-cols-2 gap-6 py-4'>
-                                <Form.Item rules={rules.grade} label="Grade" name="grade">
+                                <Form.Item rules={rules.grade} label="Grade" name="classroomNo">
                                     <Input
                                         placeholder={'eg 1'}
                                         className="border-2 border-gray-600 h-10 focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500 transition duration-150 ease-in-out"
                                         size={"large"}/>
                                 </Form.Item>
 
-                                <Form.Item rules={rules.gradeName} label="Grade Name" name="gradeName">
+                                <Form.Item rules={rules.gradeName} label="Grade Name" name="classroomName">
                                     <Input
                                         placeholder={'eg Grade One'}
                                         className="border-2 border-gray-600 h-10 focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500 transition duration-150 ease-in-out"
                                         size={"large"}/>
                                 </Form.Item>
-                                <Form.Item rules={rules.stream} label="Stream" name="stream">
-                                    <Input
-                                        placeholder={'North'}
-                                        className="border-2 border-gray-600 h-10 focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500 transition duration-150 ease-in-out"
-                                        size={"large"}/>
-                                </Form.Item>
-                                <Form.Item rules={rules.classTeacher} label="Class Teacher" name="classTeacher">
+                                <Form.Item rules={rules.classTeacher} label="Class Teacher" name="classroomFacilitator">
                                     <Select
                                         placeholder={'Select Class teacher'}
                                         options={dataSource}
@@ -103,8 +113,6 @@ const CreatClass = () => {
                                     />
                                 </Form.Item>
                             </div>
-
-
 
                             <div className="flex align-middle justify-center py-4">
                                 <button
@@ -125,4 +133,4 @@ const CreatClass = () => {
 
 }
 
-export default CreatClass;
+export default CreatClassroom;
