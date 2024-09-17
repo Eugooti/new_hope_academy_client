@@ -1,4 +1,3 @@
-import {useTheme} from "../../../context/ThemeContext/ThemeContext.jsx";
 import Heading from "../../../components/heading/Heading.jsx";
 import {Form, Input, message, Select} from "antd";
 import {useForm} from "antd/es/form/Form.js";
@@ -7,10 +6,10 @@ import {useEffect, useState} from "react";
 import {readStaff} from "../../../redux/Reducers/AdminSlice/staffSlice.js";
 import {getFromLocalStorage} from "../../../utils/LocalStorage/localStorage.jsx";
 import {createClass} from "../../../redux/Reducers/AdminSlice/classSlice.js";
+import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx";
 
 const CreatClassroom = () => {
-    const {light,dark,lightTheme}=useTheme()
-    const theme=!lightTheme?light:dark;
+
 
     const {loading}=useSelector((state)=>state.classroom)
 
@@ -76,6 +75,15 @@ const CreatClassroom = () => {
         classTeacher:[{required:true,message:"Required field"}],
     }
 
+    const {currentTheme} = useTheme()
+
+    const selectStyles = {
+        backgroundColor: currentTheme.surface,
+        color: currentTheme.text,
+        borderColor: currentTheme.border,
+    }
+
+
     return(
         <>
             {contextHolder}
@@ -107,6 +115,10 @@ const CreatClassroom = () => {
                                 </Form.Item>
                                 <Form.Item rules={rules.classTeacher} label="Class Teacher" name="classroomFacilitator">
                                     <Select
+                                        style={selectStyles}
+                                        dropdownStyle={{
+                                            backgroundColor: currentTheme.surface,
+                                        }}
                                         placeholder={'Select Class teacher'}
                                         options={dataSource}
                                         size={"large"}

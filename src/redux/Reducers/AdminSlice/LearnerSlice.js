@@ -14,7 +14,7 @@ export const admitLearner = createAsyncThunk(
 export const readOneLearner = createAsyncThunk(
     "read/one/learner",
     async (id, { rejectWithValue }) => {
-        return await CRUDMethods.read(`/student/read/${id}`,{rejectWithValue})
+        return await CRUDMethods.read(`/learners/readOne/${id}`,{rejectWithValue})
     }
 );
 

@@ -13,6 +13,7 @@ import {
 import {LocationOn} from "@mui/icons-material";
 import Heading from '../../../components/heading/Heading';
 import {getFromLocalStorage} from "../../../utils/LocalStorage/localStorage.jsx";
+import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx";
 
 const { Option } = Select;
 
@@ -42,17 +43,17 @@ const NewStaff = () => {
         console.log('Failed:', errorInfo);
     };
 
-    const schoolSubjects = [
-        'Mathematics', 'English', 'Science', 'History', 'Geography', 'Physics', 'Chemistry', 'Biology',
-        'Physical Education', 'Art', 'Music', 'Computer Science', 'Economics', 'Business Studies',
-        'Political Science', 'Psychology', 'Sociology', 'Philosophy', 'Literature', 'Foreign Language',
-        'Environmental Science', 'Health Education', 'Drama', 'Religious Studies', 'Technology',
-        'Engineering', 'Accounting', 'Statistics', 'Home Economics', 'Astronomy'
-    ];
-    const Subjects = schoolSubjects.map((item)=>({
-        label:item,
-        value:item
-    }))
+    // const schoolSubjects = [
+    //     'Mathematics', 'English', 'Science', 'History', 'Geography', 'Physics', 'Chemistry', 'Biology',
+    //     'Physical Education', 'Art', 'Music', 'Computer Science', 'Economics', 'Business Studies',
+    //     'Political Science', 'Psychology', 'Sociology', 'Philosophy', 'Literature', 'Foreign Language',
+    //     'Environmental Science', 'Health Education', 'Drama', 'Religious Studies', 'Technology',
+    //     'Engineering', 'Accounting', 'Statistics', 'Home Economics', 'Astronomy'
+    // ];
+    // const Subjects = schoolSubjects.map((item)=>({
+    //     label:item,
+    //     value:item
+    // }))
 
     const schoolRoles = [
         'admin', 'principal', 'vicePrincipal', 'administrativeStaff', 'classTeacher', 'teachingStaff',
@@ -82,10 +83,10 @@ const NewStaff = () => {
         {label:"Student",value:"student"},{label:"Parent",value:"parent"},{label:"Guest",value:"guest"}
     ]
 
-    const roles = schoolRoles.map((item)=>({
-        value:item,
-        label:item
-    }))
+    // const roles = schoolRoles.map((item)=>({
+    //     value:item,
+    //     label:item
+    // }))
 
     const teacherQualifications = [
         'Bachelor of Education (B.Ed)', 'Master of Education (M.Ed)', 'Doctor of Education (Ed.D)',
@@ -101,6 +102,14 @@ const NewStaff = () => {
         value:item,
         label:item
     }))
+
+    const {currentTheme} = useTheme()
+
+    const selectStyles = {
+        backgroundColor: currentTheme.surface,
+        color: currentTheme.text,
+        borderColor: currentTheme.border,
+    }
 
     return (
         <>
@@ -126,7 +135,12 @@ const NewStaff = () => {
                         <Input prefix={<IdcardOutlined />} size='large' />
                     </Form.Item>
                     <Form.Item label="Gender" name='gender' rules={[{ required: true, message: 'Required Field' }]}>
-                        <Select placeholder="Select Gender" size={"large"}>
+                        <Select
+                            style={selectStyles}
+                            dropdownStyle={{
+                                backgroundColor: currentTheme.surface,
+                            }}
+                            placeholder="Select Gender" size={"large"}>
                             <Option value="Male">Male</Option>
                             <Option value="Female">Female</Option>
                         </Select>
@@ -160,18 +174,25 @@ const NewStaff = () => {
                     {/*</Form.Item>*/}
                     <Form.Item label="Roles" name="roles">
                         <Select
+                            style={{...selectStyles,width: '100%' }}
+                            dropdownStyle={{
+                                backgroundColor: currentTheme.surface,
+                            }}
                             mode={"tags"}
                             placeholder="Select Roles"
                             size={"large"}
                             options={schRoles}
                             tokenSeparators={[',']}
-                            style={{ width: '100%' }}
                         />
                     </Form.Item>
                     <Form.Item
                         rules={[{ required: true, message: 'Required Field' }]}
                         label="Qualification" name="qualifications">
                         <Select
+                            style={selectStyles}
+                            dropdownStyle={{
+                                backgroundColor: currentTheme.surface,
+                            }}
                             mode={"tags"}
                             placeholder="Select Qualifications"
                             size={"large"}

@@ -6,9 +6,10 @@ import { DevSupport } from "@react-buddy/ide-toolbox";
 import { ComponentPreviews, useInitial } from "./dev/index.js";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext/AuthContext.jsx";
-import { ThemeProvider } from "./context/ThemeContext/ThemeContext.jsx";
+import { ThemeProvider } from "./context/ThemeContext/ThemeContext2.jsx";
 import { Provider } from "react-redux";
 import Store from './redux/store.js'
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

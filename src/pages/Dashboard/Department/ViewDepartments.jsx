@@ -8,7 +8,7 @@ import {
 } from "../../../redux/Reducers/AdminSlice/departmentSlice.js";
 import {readStaff} from "../../../redux/Reducers/AdminSlice/staffSlice.js";
 import Button from "antd/es/button/index.js";
-import index from "../Index.jsx";
+import Heading from "../../../components/heading/Heading.jsx";
 
 
 const ViewDepartments = () => {
@@ -249,7 +249,7 @@ const ViewDepartments = () => {
     return (
         <>
             {contextHolder}
-
+            <Heading title={"Departments"} subtitle={"Manage Departments"}/>
                  <Form form={form} component={false}>
                         <Table
                             components={{

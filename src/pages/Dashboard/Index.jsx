@@ -13,6 +13,7 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchDepartments} from "../../redux/Reducers/AdminSlice/departmentSlice.js";
 import {data} from "autoprefixer";
+  import {useTheme} from "../../context/ThemeContext/ThemeContext2.jsx";
 
 
   const { Countdown } = Statistic;
@@ -63,6 +64,7 @@ const Dashboard = () => {
 
     const population=[20,30,40,50,60,70,80,90]
 
+    const {currentTheme} = useTheme()
 
   return(
       <>
@@ -80,7 +82,7 @@ const Dashboard = () => {
                               {departmentData?.map((item) => (
                                   <button onClick={() => console.log(item)} key={item.key}
                                           className='h-20 bg-amber-400 hover:bg-amber-500 min-w-28 rounded-xl text-xl'
-                                          style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                          style={{display: "flex", alignItems: "center", justifyContent: "center",background:currentTheme.primary}}>
                                       {item.name}
                                   </button>
                               ))}
@@ -93,7 +95,7 @@ const Dashboard = () => {
               </div>
               <div className='grid md:grid-cols-2 gap-6' style={{maxHeight: 250}}>
                   <div className='py-6 flex flex-col w-full h-full overflow-y-auto'>
-                      <h1 className='font-bold text-lg mb-3'>Term Dates</h1>
+                      <h1 style={{color:currentTheme.text}} className='font-bold text-lg mb-3'>Term Dates</h1>
                       <Collapse
                           accordion
                           expandIcon={({isActive}) => (
@@ -113,7 +115,7 @@ const Dashboard = () => {
 
                   </div>
                   <div className='py-6'>
-                      <h1 className='font-bold text-lg mb-3'>School Events</h1>
+                      <h1 style={{color:currentTheme.text}} className='font-bold text-lg mb-3'>School Events</h1>
                       <Collapse
                           accordion
                           expandIcon={({isActive}) => (
@@ -134,17 +136,17 @@ const Dashboard = () => {
 
                   </div>
               </div>
-              <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 my-4'>
-                  <div className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
-                      <h1 className='font-bold text-lg mb-3'>Recent Transfers</h1>
+              <div  className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 my-4'>
+                  <div style={{background:currentTheme.background}} className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
+                      <h1 style={{color:currentTheme.text}} className='font-bold text-lg mb-3'>Recent Transfers</h1>
                       {Transfers.map((item, index) => (
                           <div key={index}>
                               <LearnerCard name={item.name} Img={item.img} grade={item.grade} to={item.to}/>
                           </div>
                       ))}
                   </div>
-                  <div className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
-                      <h1 className='font-bold text-lg mb-3'>Population Chart</h1>
+                  <div style={{background:currentTheme.background}} className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
+                      <h1 style={{color:currentTheme.text}} className='font-bold text-lg mb-3'>Population Chart</h1>
                       <div className='grid md:grid-cols-3 sm:grid-cols-4 lg:grid-cols-4 gap-3'>
                           {population.map((item,index)=>(
                               <Progress type="dashboard"  strokeColor={conicColors} key={index}  percent={item} size={70} />
@@ -152,15 +154,15 @@ const Dashboard = () => {
                       </div>
 
                   </div>
-                  <div className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
+                  <div style={{background:currentTheme.background}} className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
                       <h1 className='font-bold text-lg mb-3'>Calendar</h1>
                       <UserCalendar/>
                   </div>
               </div>
 
               <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 my-4'>
-                  <div className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
-                      <h1 className='font-bold text-lg mb-3'>Teachers on duty</h1>
+                  <div style={{background:currentTheme.background}} className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
+                      <h1 style={{color:currentTheme.text}} className='font-bold text-lg mb-3'>Teachers on duty</h1>
                       <Row gutter={16}>
                           <Col span={12}>
                               <Card bordered={false}>
@@ -192,20 +194,25 @@ const Dashboard = () => {
                           </Col>
                       </Row>
                   </div>
-                  <div className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
-                      <h1 className='font-bold text-lg mb-3'>Prefects on duty</h1>
+                  <div style={{background:currentTheme.background}} className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
+                      <h1 style={{color:currentTheme.text}} className='font-bold text-lg mb-3'>Prefects on duty</h1>
                       <div className='grid lg:grid-cols-2'>
-                          <Countdown title="Countdown" value={deadline} onFinish={onFinish} />
+                          <Countdown
+                              title={<div><label style={{color:currentTheme.text}}>Countdown</label></div>}
+                              value={deadline} onFinish={onFinish} />
 
-                          <Countdown title="Million Seconds" value={deadline} format="HH:mm:ss:SSS" />
+                          <Countdown title={<div><label style={{color:currentTheme.text}}>Million Seconds</label></div>}
+                                     value={deadline} format="HH:mm:ss:SSS" />
 
-                          <Countdown title="Countdown" value={Date.now() + 10 * 1000} onChange={onChange} />
+                          <Countdown
+                              title={<div><label style={{color:currentTheme.text}}>Countdown</label></div>}
+                              value={Date.now() + 10 * 1000} onChange={onChange} />
                       </div>
 
 
 
                   </div>
-                  <div className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
+                  <div style={{background:currentTheme.background}} className="bg-gray-200 shadow-md alignCenter rounded-md p-4">
                       <h1 className='font-bold text-lg mb-3'>Friday Activity</h1>
                   </div>
               </div>

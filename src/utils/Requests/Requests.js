@@ -30,12 +30,12 @@ const shouldSkipUserUpdate = () => {
 
 // Axios interceptor to handle responses and errors
 instance.interceptors.response.use(
-    response => {
+    async response => {
         const status = response?.data?.status;
         if (status === 401) {
             setSkipUserUpdateFlag();
             if (window.location.pathname !== "/login") {
-                navigateToLogin();
+                await navigateToLogin();
             }
         }
         return response;
@@ -44,7 +44,7 @@ instance.interceptors.response.use(
         const status = error.response?.status;
         if (status === 401) {
             if (window.location.pathname !== "/login") {
-                navigateToLogin();
+                await navigateToLogin();
             }
         }
         return Promise.reject(error);
@@ -67,18 +67,9 @@ const makeRequest = async ({ url, method, data = null, use_jwt = false }) => {
 
     try {
         const response = await instance(
-            method !=="DELETE"?
-                {
-                   url,
-                   data,
-                   headers,
-                   method
-                }:
-                {
-                    url,
-                    headers,
-                    method
-                }
+            method !== "DELETE"
+                ? { url, data, headers, method }
+                : { url, headers, method }
         );
 
         const result = response.data;
@@ -99,6 +90,40 @@ const makeRequest = async ({ url, method, data = null, use_jwt = false }) => {
             setLocalStorage('user', user);
         } else {
             removeItem('skipUserUpdate');
+        }
+    }
+};
+
+
+// Function to make batch request
+const makeBatchRequest = async (requests, use_jwt = true) => {
+    const token = getFromLocalStorage('token');
+
+    const headers = {
+        "content-type": "application/json",
+        referrerPolicy: "no-referrer",
+        redirect: 'follow',
+        mode: 'cors',
+        cache: 'no-cache',
+        ...(use_jwt && token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+
+    try {
+        const response = await instance.post('/batch', { requests }, { headers });
+
+        // Process and return batch responses
+        const results = response.data.responses || [];
+        const status = response.status
+        return [status, results];
+    } catch (error) {
+        if (error.response) {
+            const status = error.response.status;
+            const result = error.response.data;
+            return [status, result];
+        } else {
+            const status = error.status || 500;
+            const result = { message: error.message };
+            return [status, result];
         }
     }
 };

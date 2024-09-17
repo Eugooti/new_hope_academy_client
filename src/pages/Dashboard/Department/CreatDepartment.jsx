@@ -7,10 +7,12 @@ import {getFromLocalStorage} from "../../../utils/LocalStorage/localStorage.jsx"
 import {useEffect, useState} from "react";
 import TextArea from "antd/es/input/TextArea.js";
 import {readStaff} from "../../../redux/Reducers/AdminSlice/staffSlice.js";
+import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx";
 
 const CreatDepartment = () => {
 
     const [form] = useForm();
+    const {currentTheme} = useTheme()
 
     const {  staffList } = useSelector((state) => state.staff);
     const dispatch=useDispatch();
@@ -53,6 +55,11 @@ const CreatDepartment = () => {
     }
 
 
+    const selectStyles = {
+        backgroundColor: currentTheme.surface,
+        color: currentTheme.text,
+        borderColor: currentTheme.border,
+    }
 
     return(
         <>
@@ -74,6 +81,10 @@ const CreatDepartment = () => {
                 </Form.Item>
                 <Form.Item rules={rules.required} label="Head Of Department" name='departmentHead'>
                     <Select
+                        style={selectStyles}
+                        dropdownStyle={{
+                            backgroundColor: currentTheme.surface,
+                        }}
                         size={"large"}
                         options={dataSource}
                         placeholder="Mr. John Tom"

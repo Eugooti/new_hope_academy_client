@@ -67,16 +67,16 @@ export const checkCode=createAsyncThunk(
 
 export const updatePassword=createAsyncThunk(
     "auth/updatePassword",
-    async ({id,password},{rejectWithValue})=>{
+    async ({data, id},{rejectWithValue})=>{
         try {
-            const [status,response] =await makeRequest({
-                url:`/auth/changePassword/${id}`,
-                method:"POST",
-                data:{password:password}
+            const [status,result] =await makeRequest({
+                url:`auth/updatePassword/${id}`,
+                method:"PUT",
+                data: data
             })
 
-            if (status === 200)return  response
-            else return rejectWithValue(response)
+            if (status === 200)return  result
+            else return rejectWithValue(result)
 
         }catch (error) {
             console.log(error)

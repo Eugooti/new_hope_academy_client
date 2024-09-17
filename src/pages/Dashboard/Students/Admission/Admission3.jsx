@@ -13,6 +13,8 @@ import {createLearnerClinicRecord} from "../../../../redux/Reducers/AdminSlice/c
 import {createLearnerAttendanceRecord} from "../../../../redux/Reducers/AdminSlice/attendanceSlice.js";
 import {Step, StepLabel, Stepper} from "@mui/material";
 import {addLearnerToClass} from "../../../../redux/Reducers/AdminSlice/classSlice.js";
+import {useTheme} from "../../../../context/ThemeContext/ThemeContext2.jsx";
+
 
 const medicalConditions = [
     "Non","Asthma", "Allergies", "Diabetes", "Epilepsy/Seizure Disorders",
@@ -88,7 +90,6 @@ const StudentAdmission = () => {
     };
 
     const onFormFinish = (values) => {
-        console.log('Student form values received:', values);
         setLocalStorage('student', values);
         setStudent(values);
         next();
@@ -233,13 +234,21 @@ const StudentAdmission = () => {
 
     }
 
+    const {currentTheme} = useTheme()
+
+    const selectStyles = {
+        backgroundColor: currentTheme.surface,
+        color: currentTheme.text,
+        borderColor: currentTheme.border,
+    }
+
     return (
         <>
             {contextHolder}
             <Stepper activeStep={current} alternativeLabel>
                 {items.map((item)=>(
                     <Step key={item.content}>
-                        <StepLabel>{item.title}</StepLabel>
+                        <StepLabel ><label style={{color:currentTheme.text}}>{item.title}</label></StepLabel>
                     </Step>
                 ))}
             </Stepper>
@@ -275,7 +284,12 @@ const StudentAdmission = () => {
                             name="gender"
                             rules={[{ required: true, message: 'Please select the gender!' }]}
                         >
-                            <Select size="large">
+                            <Select
+                                style={selectStyles}
+                                dropdownStyle={{
+                                    backgroundColor: currentTheme.surface,
+                                }}
+                                size="large">
                                 <Select.Option value="Male">Male</Select.Option>
                                 <Select.Option value="Female">Female</Select.Option>
                             </Select>
@@ -319,6 +333,10 @@ const StudentAdmission = () => {
                                     (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                                 }
                                 options={grades}
+                                style={selectStyles}
+                                dropdownStyle={{
+                                    backgroundColor: currentTheme.surface,
+                                }}
                             />
 
                         </Form.Item>
@@ -341,6 +359,10 @@ const StudentAdmission = () => {
                                 size={"large"}
                                 placeholder='Select status'
                                 options={disability}
+                                style={selectStyles}
+                                dropdownStyle={{
+                                    backgroundColor: currentTheme.surface,
+                                }}
 
                             />
                         </Form.Item>
@@ -357,6 +379,10 @@ const StudentAdmission = () => {
                                     (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                                 }
                                 options={medicalConditionsObjects}
+                                style={selectStyles}
+                                dropdownStyle={{
+                                    backgroundColor: currentTheme.surface,
+                                }}
                             />
                         </Form.Item>
                     </div>
@@ -410,7 +436,12 @@ const StudentAdmission = () => {
                                                     name={[name, 'relationship']}
                                                     rules={[{ required: true, message: 'Please select the relationship!' }]}
                                                 >
-                                                    <Select size="large">
+                                                    <Select
+                                                        style={selectStyles}
+                                                        dropdownStyle={{
+                                                            backgroundColor: currentTheme.surface,
+                                                        }}
+                                                        size="large">
                                                         <Select.Option value="father">Father</Select.Option>
                                                         <Select.Option value="mother">Mother</Select.Option>
                                                         <Select.Option value="guardian">Guardian</Select.Option>
@@ -440,14 +471,6 @@ const StudentAdmission = () => {
                                                 >
                                                     <Input size="large" />
                                                 </Form.Item>
-                                                {/*<Form.Item*/}
-                                                {/*    label="Address"*/}
-                                                {/*    {...restField}*/}
-                                                {/*    name={[name, 'address']}*/}
-                                                {/*    rules={[{ required: true, message: 'Missing address' }]}*/}
-                                                {/*>*/}
-                                                {/*    <Input size="large" />*/}
-                                                {/*</Form.Item>*/}
                                             </div>
                                             <div className="flex justify-center pb-8">
                                                 <button

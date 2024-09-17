@@ -7,9 +7,9 @@ import {login} from "../../redux/Reducers/authSlice.js";
 import {useState} from "react";
 import {useNavigate,useLocation} from "react-router-dom";
 import RecoverModal from "../../components/modals/modal.jsx";
-import {useTheme} from "../../context/ThemeContext/ThemeContext.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import Button from "antd/es/button/index.js";
+import {useTheme} from "../../context/ThemeContext/ThemeContext2.jsx";
 
 const Login = () => {
     const [form] = useForm();
@@ -42,18 +42,16 @@ const Login = () => {
         password:[{required:true,message:'Password is required!'}],
     }
 
-    const {light,dark,lightTheme}=useTheme()
-    const theme=!lightTheme?light:dark;
-
+    const {currentTheme} = useTheme()
 
     return (
 
                 <>
                     {contextHolder}
-                    <div style={{background:theme.bg,color:theme.text, minHeight:'100vh'}} className=' grid grid-cols-1 lg:gap-5 md:grid-cols-2 items-center justify-items-center '>
+                    <div style={{background:currentTheme.surface,color:currentTheme.text, minHeight:'100vh'}} className=' grid grid-cols-1 lg:gap-5 md:grid-cols-2 items-center justify-items-center '>
                         <Heading title={'New Hope Academy'} subtitle={'School Portal'}/>
                         <div className='w-full'>
-                            <Card style={{background:theme.uiElements}} className='w-full'>
+                            <Card style={{background:currentTheme.background}} className='w-full'>
 
                                 <div >
                                     <Heading title={'Welcome Back!'} subtitle={'Login'}/>
@@ -85,7 +83,7 @@ const Login = () => {
                                         <div className='py-10'>
                                             <Button
                                                 loading={loading}
-                                                style={{background:theme.button}}
+                                                style={{background:currentTheme.primary}}
                                                 className='hover:bg-blue-950 h-10 w-full rounded-xl text-xl font-sans text-white'
                                                 htmlType='submit'
                                                 type="primary">

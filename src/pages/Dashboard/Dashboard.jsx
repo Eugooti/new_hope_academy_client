@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { Layout, Menu, Button, theme } from 'antd';
+import {Layout, Menu, Button, ConfigProvider} from 'antd';
 import { getFromLocalStorage } from "../../utils/LocalStorage/localStorage.jsx";
 import {
     MenuFoldOutlined,
@@ -30,16 +30,19 @@ import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
 import NavBar from "../../components/NavBar/UserAction.jsx";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import dp from "../../assets/logo1.png";
+import {useTheme} from "../../context/ThemeContext/ThemeContext2.jsx";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const DashboardContext = createContext(undefined);
 
 export const DashboardProvider = () => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
+    // const {
+    //     token: { colorBgContainer, borderRadiusLG },
+    // } = theme.useToken();
 
     const [collapsed, setCollapsed] = useState(false);
     const [selectedKey, setSelectedKey] = useState('1');
@@ -163,85 +166,115 @@ export const DashboardProvider = () => {
         }
     };
 
+    const { currentTheme, isDarkTheme, toggleTheme } = useTheme();
+
 
     return (
         <DashboardContext.Provider value={null}>
-            <Layout hasSider>
-
-                <div className='pl-5 py-3' style={{ height: "100%" }}>
-                    <Sider
-                        theme={"light"}
-                        className='rounded-2xl bg-amber-400'
-                        style={{height: "96vh", position: "fixed", overflow: "auto"}}
-                        trigger={null}
-                        collapsible
-                        collapsed={collapsed}
-                    >
-
-
-                        <Menu
-                            theme="light"
-                            mode="inline"
-                            className='pt-5'
-                            selectedKeys={[selectedKey]}
-                            items={items}
-                            onClick={onClick}
-                        />
-
-                        <div>
-                            <img src={dp} alt=""/>
-                        </div>
-
-                    </Sider>
-                </div>
-
-                <Layout
-                    style={{marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s ease-out'}}
-                >
-                    <Header
-                        style={{
-                            padding: 0,
-                            background: colorBgContainer,
-                        }}
-                        className='rounded-2xl ml-3'
-                    >
-                        <div className='flex flex-row justify-between pr-8'>
-                            <Button
-                                type="text"
-                                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                                onClick={() => setCollapsed(!collapsed)}
+            <ConfigProvider
+                theme={{
+                    token: {
+                        colorPrimary: currentTheme.primary,
+                        colorBgContainer: currentTheme.surface,
+                        colorText: currentTheme.text,
+                        colorTextSecondary: currentTheme.subtext,
+                    },
+                }}
+            >
+                <Layout hasSider style={{background:currentTheme.background}}>
+                    <div className='pl-5 py-3' style={{ height: "100%" }}>
+                        <Sider
+                            theme={isDarkTheme ? "dark" : "light"}
+                            className='rounded-2xl'
+                            style={{
+                                height: "96vh",
+                                position: "fixed",
+                                overflow: "auto",
+                                backgroundColor: currentTheme.surface,
+                            }}
+                            trigger={null}
+                            collapsible
+                            collapsed={collapsed}
+                        >
+                            <Menu
+                                theme={isDarkTheme ? "dark" : "light"}
+                                mode="inline"
+                                className='pt-5'
+                                selectedKeys={[selectedKey]}
+                                items={items}
+                                onClick={onClick}
                                 style={{
-                                    fontSize: '16px',
-                                    width: 64,
-                                    height: 64,
+                                    backgroundColor: currentTheme.surface,
+                                    color: currentTheme.text,
                                 }}
                             />
-                            <div className='flex justify-center align-middle'>
-                                <NavBar />
+                            <div>
+                                <img src={dp} alt=""/>
                             </div>
-                        </div>
-                    </Header>
-                    <Content
+                        </Sider>
+                    </div>
+
+                    <Layout
                         style={{
-                            margin: '20px 16px 0',
-                            overflow: 'auto',
-                            height: 'calc(100vh - 88px)',
-                            padding: 24,
-                            background: colorBgContainer,
-                            borderRadius: borderRadiusLG,
+                            marginLeft: collapsed ? 80 : 200,
+                            transition: 'margin-left 0.2s ease-out',
+                            backgroundColor: currentTheme.background,
                         }}
                     >
-                        <Outlet />
-                    </Content>
-                    <Footer
-                        style={{
-                            textAlign: 'center',
-                        }}
-                    >
-                        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-                    </Footer>
+                        <Header
+                            style={{
+                                padding: 0,
+                                background: currentTheme.surface,
+                            }}
+                            className='rounded-2xl ml-3'
+                        >
+                            <div className='flex flex-row justify-between pr-8'>
+                                <Button
+                                    type="text"
+                                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                                    onClick={() => setCollapsed(!collapsed)}
+                                    style={{
+                                        fontSize: '16px',
+                                        width: 64,
+                                        height: 64,
+                                        color: currentTheme.text,
+                                    }}
+                                />
+                                <div className='flex justify-center align-middle'>
+                                    <div>
+                                        <Button size={"large"} onClick={toggleTheme} shape="circle" icon={isDarkTheme?<DarkModeIcon/>:<LightModeIcon/>}/>
+                                    </div>
+
+                                    <NavBar />
+                                </div>
+                            </div>
+                        </Header>
+                        <Content
+                            style={{
+                                margin: '20px 16px 0',
+                                overflow: 'auto',
+                                height: 'calc(100vh - 88px)',
+                                padding: 24,
+                                background: currentTheme.surface,
+                                borderRadius: 8,
+                            }}
+                        >
+                            <Outlet />
+                        </Content>
+                        <Footer
+                            className={'rounded-2xl'}
+                            style={{
+                                margin: '20px 16px 0',
+                                textAlign: 'center',
+                                backgroundColor: currentTheme.surface,
+                                color: currentTheme.text,
+                            }}
+                        >
+                            Ant Design ©{new Date().getFullYear()} Created by Ant UED
+                        </Footer>
+                    </Layout>
                 </Layout>
-            </Layout>
+            </ConfigProvider>
         </DashboardContext.Provider>
     );
 };

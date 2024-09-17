@@ -38,6 +38,7 @@ const TeacherProfile = () => {
 
     const handleUpdateProfile = (values) => {
         // Handle profile update logic here
+        console.log(values)
         setIsProfileFormVisible(false); // Hide form after submission
     };
 
@@ -48,9 +49,16 @@ const TeacherProfile = () => {
     const user=getFromLocalStorage('user')
     const [messageApi, contextHolder] = message.useMessage();
     const {loading}=useSelector((state) => state.staff)
-    const handleChangePassword = (values) => {
+
+    const dispatch2 = useDispatch();
+    const handleChangePassword = async (values) => {
         // Handle password change logic here
-        dispatch(updatePassword({id:user?.staffId,password:values.newPassword})).then((action)=>{
+        const data = {
+            password:values.newPassword
+        }
+        const id=user?.employeeNo
+        await dispatch2(updatePassword({data, id})).then((action)=>{
+            console.log(action)
             if (action.error){
                 messageApi.error(action.payload?.message)
             }else {
@@ -67,8 +75,6 @@ const TeacherProfile = () => {
          dispatch(readUserSchedule(uID))
     }, [dispatch]);
 
-    console.log(userSchedules && userSchedules.result.weekSchedule)
-
 
     const [schedule, setSchedule] = useState();
     useEffect(() => {
@@ -80,7 +86,6 @@ const TeacherProfile = () => {
 
     }, [userSchedules]);
 
-    console.log(schedule)
 
     return (
         <div className="p-4">
@@ -186,9 +191,6 @@ const TeacherProfile = () => {
                                 layout="vertical"
                                 onFinish={handleChangePassword}
                             >
-                                {/*<Form.Item name="oldPassword" label="Old Password" rules={[{ required: true }]}>*/}
-                                {/*    <Input.Password  size={"large"}/>*/}
-                                {/*</Form.Item>*/}
                                 <Form.Item name="newPassword" label="New Password" rules={[{ required: true, min: 6 }]}>
                                     <Input.Password  size={"large"}/>
                                 </Form.Item>

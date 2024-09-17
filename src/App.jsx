@@ -1,6 +1,6 @@
 import './App.css';
 import { Route, Routes } from "react-router-dom";
-import { useTheme } from "./context/ThemeContext/ThemeContext.jsx";
+// import { useTheme } from "./context/ThemeContext/ThemeContext.jsx";
 import Login from "./pages/auth/Login.jsx";
 import PasswordRecovery from "./pages/auth/PasswordRecovery.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
@@ -31,15 +31,16 @@ import FeeSetting from "./pages/Dashboard/fee/FeeSetting.jsx";
 import TeacherProfile from "./pages/Dashboard/Staff/Profile.jsx";
 import FeeStructure from "./pages/Dashboard/fee/FeeStructure.jsx";
 import FeeItemsList from "./pages/Dashboard/fee/feeItem/FeeItemsList.jsx";
+import DarkLoginPage from "./components/DarkThemeLogin.jsx";
 
 function App() {
-  const { light, dark, lightTheme } = useTheme();
-  const theme = !lightTheme ? light : dark;
+  // const { light, dark, lightTheme } = useTheme();
+  // const theme = !lightTheme ? light : dark;
 
   return (
-      <div style={{ background: theme.bg, minHeight: '100vh', display: "flex", alignItems: "center", justifyContent: "center" }} className="App">
+      <div style={{  minHeight: '100vh', display: "flex", alignItems: "center", justifyContent: "center" }} className="App">
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<DarkLoginPage />} />
           <Route path="/getCode" element={<PasswordRecovery />} />
           <Route path="/changePassword" element={<ResetPassword />} />
 
