@@ -16,6 +16,7 @@ import attendanceSlice from "./Reducers/AdminSlice/attendanceSlice.js";
 import feeSlice from "./Reducers/AdminSlice/FeeSlice.js";
 import scheduleSlice from "./Reducers/AdminSlice/scheduleSlice.js";
 import vacanciesSlice from "./Reducers/hrmSlice/vacanciesSlice.js";
+import batchRequests from './Reducers/AdminSlice/batchRequestSlice.js'
 
 
 const rootReducers = combineReducers({
@@ -35,6 +36,7 @@ const rootReducers = combineReducers({
     fee:feeSlice,
     schedule:scheduleSlice,
     vacancies:vacanciesSlice,
+    batchRequests:batchRequests
 });
 
 export default (state = initialState, action) => rootReducers(state, action);

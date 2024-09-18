@@ -1,4 +1,4 @@
-import makeRequest from "../../utils/Requests/Requests.js";
+import {makeRequest} from "../../utils/Requests/Requests.js";
 
 export const create = async (data,url,{rejectWithValue}) => {
   try {

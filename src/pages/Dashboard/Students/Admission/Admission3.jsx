@@ -14,6 +14,7 @@ import {createLearnerAttendanceRecord} from "../../../../redux/Reducers/AdminSli
 import {Step, StepLabel, Stepper} from "@mui/material";
 import {addLearnerToClass} from "../../../../redux/Reducers/AdminSlice/classSlice.js";
 import {useTheme} from "../../../../context/ThemeContext/ThemeContext2.jsx";
+import {BatchRequest} from "../../../../redux/Reducers/AdminSlice/batchRequestSlice.js";
 
 
 const medicalConditions = [
@@ -117,7 +118,6 @@ const StudentAdmission = () => {
             parents,
             admittedBy: user?.employeeNo
         }
-        console.log({newLearner:newLearner})
         await dispatch(admitLearner(newLearner)).then((action) => {
             console.log(action)
             if (action.error) {
@@ -218,9 +218,9 @@ const StudentAdmission = () => {
 
     const addToClass = async () => {
         const learnerData={
-            studentId: admittedLearner?.result?.studentId,
-            firstName:admittedLearner?.result?.first_name ,
-            lastName:admittedLearner?.result?.last_name,
+            studentId: admittedLearner?.result?.admNo,
+            firstName:admittedLearner?.result?.firstName ,
+            lastName:admittedLearner?.result?.lastName,
             gender: admittedLearner?.result?.gender,
         }
       const grade = admittedLearner?.result?.grade
@@ -241,6 +241,39 @@ const StudentAdmission = () => {
         color: currentTheme.text,
         borderColor: currentTheme.border,
     }
+
+
+    const addLearnerData = async ()=>{
+        const classroom = admittedLearner?.result?.classroom
+
+        const classroomData = {
+            name:`${admittedLearner?.result?.firstName} ${admittedLearner?.result?.lastName}`,
+            admNo:admittedLearner?.result?.admNo,
+            gender:admittedLearner?.result?.gender
+        }
+
+        const classroomAttendance = {
+            fullName:`${admittedLearner?.result?.firstName} ${admittedLearner?.result?.lastName}`,
+            admNo:admittedLearner?.result?.admNo,
+        }
+
+        const medicalRecord = {
+            fullName:`${admittedLearner?.result?.firstName} ${admittedLearner?.result?.lastName}`,
+            admNo:admittedLearner?.result?.admNo,
+            classroom: admittedLearner?.result?.classroom,
+        }
+
+
+        const requests = [
+            { method: "PUT", url: `/classroom/addLearner/${classroom}`, data: classroomData },
+            { method: "POST", url: `/learnerService/clinic/create`, data: medicalRecord },
+        ];
+
+        await dispatch(BatchRequest(requests)).then((result)=>{
+            console.log(result)
+        })
+    }
+
 
     return (
         <>
@@ -589,7 +622,7 @@ const StudentAdmission = () => {
                         <Button type='dashed' onClick={addToClass}>Add To Class</Button>
                     </div>
                     <div className="flex justify-end">
-                        <Button type="primary" className='w-24' onClick={final}>Finish</Button>
+                        <Button type="primary" className='w-24' onClick={addLearnerData}>Finish</Button>
                         <Button style={{ margin: '0 8px' }} onClick={prev}>
                             Previous
                         </Button>

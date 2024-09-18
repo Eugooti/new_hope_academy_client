@@ -1,6 +1,6 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {makeRequest} from "../../../utils/Requests/Requests.js";
 
 const addCourseBook=createAsyncThunk(
     "addCoursebook",

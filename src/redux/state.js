@@ -120,6 +120,11 @@ const initialState={
         payrollList:null,
         staffAttendance:null,
         staffAttendanceList:null,
+    },
+    batch_requests:{
+        loading:false,
+        error:null,
+        response:null
     }
 
 }

@@ -1,6 +1,6 @@
 import {createSlice,createAsyncThunk} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import makeRequest from "../../../utils/Requests/Requests.js";
+import {makeRequest} from "../../../utils/Requests/Requests.js";
 
 export const addEvent=createAsyncThunk(
     "events/add",

@@ -96,8 +96,11 @@ const makeRequest = async ({ url, method, data = null, use_jwt = false }) => {
 
 
 // Function to make batch request
-const makeBatchRequest = async (requests, use_jwt = true) => {
+
+// New function to make batch request
+const makeBatchRequest = async (requests) => {
     const token = getFromLocalStorage('token');
+    const user = getFromLocalStorage('user');
 
     const headers = {
         "content-type": "application/json",
@@ -105,16 +108,26 @@ const makeBatchRequest = async (requests, use_jwt = true) => {
         redirect: 'follow',
         mode: 'cors',
         cache: 'no-cache',
-        ...(use_jwt && token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
 
     try {
-        const response = await instance.post('/batch', { requests }, { headers });
+        const batchRequests = requests.map(req => ({
+            method: req.method,
+            url: req.url,
+            data: req.data,
+            headers: {
+                ...headers,
+                ...(req.headers || {}),  // Include any additional headers from the request
+            },
+        }));
 
-        // Process and return batch responses
-        const results = response.data.responses || [];
-        const status = response.status
-        return [status, results];
+        // Send the batch request to the server
+        const response = await instance.post('/batch', { requests: batchRequests }, { headers });
+
+        const result = response.data;
+        const status = response.status;
+        return [status, result];
     } catch (error) {
         if (error.response) {
             const status = error.response.status;
@@ -125,8 +138,14 @@ const makeBatchRequest = async (requests, use_jwt = true) => {
             const result = { message: error.message };
             return [status, result];
         }
+    } finally {
+        if (!shouldSkipUserUpdate()) {
+            setLocalStorage('user', user);
+        } else {
+            removeItem('skipUserUpdate');
+        }
     }
 };
 
 
-export default makeRequest;
+export {makeRequest,makeBatchRequest};
