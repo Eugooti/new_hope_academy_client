@@ -2,39 +2,47 @@ import  { useState } from 'react';
 import {Input, Spin,  Descriptions, Card, List, Tag, Progress, Space, Typography} from 'antd';
 import {
     BookOutlined, CalendarOutlined,
-    HomeOutlined,
     MailOutlined,
     PhoneOutlined,
     SearchOutlined,
     TeamOutlined,
-    TrophyOutlined
+    TrophyOutlined, UsergroupAddOutlined, UserOutlined
 } from '@ant-design/icons';
+import Image from '../assets/team-1.jpg'
+import {useDispatch} from "react-redux";
+import {readOneLearner} from "../redux/Reducers/AdminSlice/LearnerSlice.js";
 
 const { Title, Text } = Typography;
 
 // Mock search function to simulate fetching data
-const fetchLearnerData = (admissionNo, setLoading, setLearner) => {
+const fetchLearnerData = (fetchedRecord, setLoading, setLearner) => {
     setLoading(true);
     setTimeout(() => {
         const mockLearner = {
-            name: 'John Doe',
-            admissionNo: 'ABC123',
-            class: '10A',
-            age: 16,
-            email: 'john.doe@example.com',
-            phone: '+123456789',
-            address: '123 Elm Street, Springfield',
+            name: `${fetchedRecord?.firstName} ${fetchedRecord?.lastName}`,
+            admissionNo: fetchedRecord?.admNo,
+            class: fetchedRecord?.classroom,
+            YOB: fetchedRecord?.yob,
+            UPI: fetchedRecord?.UPINo,
+            BirthCertNo: fetchedRecord?.birthCertificateNo,
+            classroom: fetchedRecord?.classroom,
+            disability:fetchedRecord?.disability,
+            medicalCondition:fetchedRecord?.medicalCondition,
+            Gender: fetchedRecord?.gender,
+            address: fetchedRecord?.address,
             guardian: {
-                name: 'Jane Doe',
-                phone: '+987654321',
-                email: 'jane.doe@example.com'
+                name: `${fetchedRecord?.parents[0].first_name} ${fetchedRecord?.parents[0].last_name}`,
+                phone: fetchedRecord?.parents[0].phone,
+                email: fetchedRecord?.parents[0].email,
+                relationship: fetchedRecord?.parents[0].relationship,
+                idNo: fetchedRecord?.parents[0].idNo,
             },
             performance: {
                 math: 'A',
                 english: 'B+',
                 science: 'A-'
             },
-            profilePic: 'https://randomuser.me/api/portraits/men/32.jpg',
+            profilePic: Image,
             subjects: [
                 { name: "Mathematics", progress: 90 },
                 { name: "English", progress: 85 },
@@ -58,16 +66,24 @@ const fetchLearnerData = (admissionNo, setLoading, setLearner) => {
 };
 
 const LearnerProfile = () => {
+
     const [admissionNo, setAdmissionNo] = useState('');
     const [loading, setLoading] = useState(false);
     const [learner, setLearner] = useState(null);
 
-    const handleSearch = () => {
-        fetchLearnerData(admissionNo, setLoading, setLearner);
+    const dispatch = useDispatch();
+
+    const handleSearch = async () => {
+        await dispatch(readOneLearner(admissionNo)).then((action) => {
+            console.log(action);
+            fetchLearnerData(action.payload.result, setLoading, setLearner);
+
+        })
+
     };
 
     return (
-        <div className="p-6 bg-gray-900 min-h-screen text-white">
+        <div >
             {/* Search Section */}
             <div className="text-center">
                 <h1 className="text-3xl font-bold text-blue-500 mb-4">Search Learner Profile</h1>
@@ -90,7 +106,7 @@ const LearnerProfile = () => {
 
             {/* Learner Profile Section */}
             {learner && (
-                <div className="max-w-7xl mx-auto bg-gray-800 rounded-lg p-8 shadow-lg">
+                <div className="">
                     <div className="flex items-center space-x-6 mb-8">
                         {/* Profile Picture */}
                         <img
@@ -101,32 +117,41 @@ const LearnerProfile = () => {
                         <div>
                             <h2 className="text-2xl font-bold">{learner.name}</h2>
                             <p className="text-sm text-blue-400">Admission No: {learner.admissionNo}</p>
-                            <p className="text-sm text-gray-400">{learner.email}</p>
+                            <p className="text-sm text-gray-400">{learner.classroom}</p>
                         </div>
                     </div>
 
-                    <div className='grid grid-cols-2 gap-6'>
-                        <Descriptions className="bg-gray-700 p-4 rounded-md mb-6"
+                    <div className='grid  lg:grid-cols-2 gap-6'>
+                        <Descriptions className=" p-4 rounded-md mb-6"
                                       title={<h3 className="text-xl font-semibold text-blue-500 mb-3">Personal Information</h3>}
                                       bordered column={1}>
-                            <Descriptions.Item label="Age">{learner.age}</Descriptions.Item>
-                            <Descriptions.Item label="Phone"><PhoneOutlined className="mr-2"/>{learner.phone}
+                            <Descriptions.Item label="YOB">{learner.YOB}</Descriptions.Item>
+                            <Descriptions.Item label="NEMIS No:">{learner.UPI}</Descriptions.Item>
+                            <Descriptions.Item label="Birth Certicate No.">{learner.BirthCertNo}</Descriptions.Item>
+                            <Descriptions.Item label="Gender">{learner.Gender}
                             </Descriptions.Item>
-                            <Descriptions.Item label="Email"><MailOutlined className="mr-2"/>{learner.email}
+                            <Descriptions.Item label="Disability">{learner.disability}
                             </Descriptions.Item>
-                            <Descriptions.Item label="Address"><HomeOutlined className="mr-2"/>{learner.address}
+                            <Descriptions.Item label="Medical Condition">{learner.medicalCondition}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Address">{learner.address}
                             </Descriptions.Item>
                         </Descriptions>
 
                         <Descriptions
                             title={<h3 className="text-xl font-semibold text-blue-500 mb-3">Guardian Information</h3>}
-                            bordered column={1} className="bg-gray-700 p-4 rounded-md mb-6">
+                            bordered column={1} className="p-4 rounded-md mb-6">
                             <Descriptions.Item label="Name"><TeamOutlined className="mr-2"/>{learner.guardian.name}
                             </Descriptions.Item>
                             <Descriptions.Item label="Phone"><PhoneOutlined className="mr-2"/>{learner.guardian.phone}
                             </Descriptions.Item>
                             <Descriptions.Item label="Email"><MailOutlined className="mr-2"/>{learner.guardian.email}
                             </Descriptions.Item>
+                            <Descriptions.Item label="Relationship"><UsergroupAddOutlined className="mr-2"/>{learner.guardian.relationship}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Id No."><UserOutlined className="mr-2"/>{learner.guardian.idNo}
+                            </Descriptions.Item>
+
                         </Descriptions>
                     </div>
 

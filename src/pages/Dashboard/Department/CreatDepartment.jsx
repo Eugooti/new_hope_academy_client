@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import TextArea from "antd/es/input/TextArea.js";
 import {readStaff} from "../../../redux/Reducers/AdminSlice/staffSlice.js";
 import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx";
+import {getFromSessionStorage} from "../../../utils/LocalStorage/sessionStorage.jsx";
 
 const CreatDepartment = () => {
 
@@ -36,7 +37,7 @@ const CreatDepartment = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const {loading}=useSelector(state => state.department)
 
-    const user = getFromLocalStorage('user')
+    const user = getFromSessionStorage('user')
     const onFormFinish = async (values) => {
         const data = {
             ...values,
@@ -97,7 +98,7 @@ const CreatDepartment = () => {
                 </Form.Item>
 
                 <div>
-                    <button className='bg-blue-900 hover:bg-blue-950 h-10 w-full rounded-2xl text-white text-xl'
+                    <button style={{background:currentTheme.secondary,color:currentTheme.text}} className=' h-10 w-full rounded-2xl text-xl'
                             type="submit">
                         {loading?"Adding...":"Add Department"}
                     </button>

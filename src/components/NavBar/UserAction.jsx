@@ -1,30 +1,45 @@
-import { Fragment } from "react";
-import { Menu, Transition } from '@headlessui/react';
+import {Fragment} from "react";
+import {Menu, Transition} from '@headlessui/react';
 import dp from '../../assets/dp.jpg';
-import { useNavigate } from "react-router-dom";
-import { useTheme } from '../../context/ThemeContext/ThemeContext2.jsx'; // Adjust this path as needed
+import {useNavigate} from "react-router-dom";
+import {useTheme} from '../../context/ThemeContext/ThemeContext2.jsx';
+import {useDispatch} from "react-redux";
+import {logout} from "../../redux/Reducers/authSlice.js";
+import {message} from "antd";
+import {removeSessionItem} from "../../utils/LocalStorage/sessionStorage.jsx"; // Adjust this path as needed
 
 const UserAction = () => {
     const { currentTheme } = useTheme(); // Access current theme from context
+    const [messageApi, contextHolder] = message.useMessage();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
+    const Logout = async () => {
+      await dispatch(logout()).then(action=>{
+          action.error?
+              messageApi.error(action.payload.message):
+              messageApi.success(action.payload.message).then(()=>{
+                  navigate('/login')
+                  removeSessionItem('user')
+                  removeSessionItem("token")
+                  removeSessionItem("refreshToken")
+              })
+      })
+    }
+    
     const userNavigation = [
-        { name: 'Your Profile', href: '/profile' },
-        { name: 'Settings', href: '#' },
-        { name: 'Sign out', href: '#' },
+        { name: 'Your Profile', onClick: ()=>(navigate('/profile')) },
+        { name: 'Sign out', onClick: Logout },
     ];
 
-    const navigate = useNavigate();
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ');
     }
 
-    const navigation = (to) => {
-        navigate(to);
-    };
-
     return (
         <div className='flex justify-center align-middle'>
+            {contextHolder}
             <Menu as="div" className="relative ml-5">
                 <div className='pt-4'>
                     <Menu.Button
@@ -57,7 +72,7 @@ const UserAction = () => {
                             <Menu.Item key={item.name}>
                                 {({ active }) => (
                                     <label
-                                        onClick={() => navigation(item.href)}
+                                        onClick={item.onClick}
                                         className={classNames(
                                             active ? `bg-${currentTheme.hover}` : '',
                                             `block px-4 py-2 text-sm text-${currentTheme.subtext} cursor-pointer`

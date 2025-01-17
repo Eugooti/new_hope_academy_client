@@ -4,9 +4,16 @@ import {CRUDMethods} from "../../CRUD/index.js";
 
 export const createSchedule = createAsyncThunk(
     "schedule/create",
-    async (data,{rejectWithValue})=>{
-        return await CRUDMethods.create(data,"/schedule/create",{rejectWithValue})
+    async ({id,data},{rejectWithValue})=>{
+        return await CRUDMethods.create(data,`/events/reminder/create/${id}`,{rejectWithValue})
 
+    }
+)
+
+export const readSchedules = createAsyncThunk(
+    'schedule/read',
+    async (_,{rejectWithValue})=>{
+        return await CRUDMethods.read('/events/reminder/read',{rejectWithValue})
     }
 )
 
@@ -14,7 +21,7 @@ export const createSchedule = createAsyncThunk(
 export const readUserSchedule = createAsyncThunk(
     "readUser/schedule",
     async (id,{rejectWithValue})=>{
-        return await CRUDMethods.read(`users/read/${id}`,{rejectWithValue})
+        return await CRUDMethods.read(`/events/reminder/readOne/${id}`,{rejectWithValue})
     }
 )
 
@@ -50,6 +57,22 @@ const scheduleSlice = createSlice({
                 state.userSchedules = null;
             })
             .addCase(readUserSchedule.fulfilled,(state, action) => {
+                state.loading = false;
+                state.error = null;
+                state.userSchedules = action.payload;
+            })
+            .addCase(readSchedules.pending,state => {
+                state.loading = true;
+                state.error = null;
+                state.userSchedules = null;
+
+            })
+            .addCase(readSchedules.rejected,(state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.userSchedules = null;
+            })
+            .addCase(readSchedules.fulfilled,(state, action) => {
                 state.loading = false;
                 state.error = null;
                 state.userSchedules = action.payload;

@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import initialState from "../../state.js";
-import {makeBatchRequest} from "../../../utils/Requests/Requests.js";
+import {makeBatchRequest} from "../../../utils/Requests/Requests2.js";
 
 
 export const BatchRequest = createAsyncThunk(
@@ -9,7 +9,7 @@ export const BatchRequest = createAsyncThunk(
         try {
             const [status, results] = await makeBatchRequest(requests);
             if (status === 200) return results;
-            else return rejectWithValue(requests);
+            else return rejectWithValue(results);
         }catch(error){
             return rejectWithValue(error);
         }

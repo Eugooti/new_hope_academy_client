@@ -1,6 +1,7 @@
 import  { useState, useEffect } from 'react';
 import { Transfer, Button } from 'antd';
-import 'tailwindcss/tailwind.css'; // Ensure Tailwind CSS is imported
+import 'tailwindcss/tailwind.css';
+import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx"; // Ensure Tailwind CSS is imported
 
 const FeeSetting = () => {
     const schoolFees = [
@@ -42,6 +43,8 @@ const FeeSetting = () => {
         setTotalFee(total);
     };
 
+    const {currentTheme} = useTheme()
+
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-2">Set Learner Fee</h2>
@@ -55,6 +58,8 @@ const FeeSetting = () => {
                         selectedKeys={selectedKeys}
                         showSearch
                         listStyle={{
+                            background:currentTheme.background,
+                            color:currentTheme.text,
                             width: '100%',
                             height: 400,
                         }}
@@ -67,7 +72,7 @@ const FeeSetting = () => {
                     />
                 </div>
                 <div className="w-full">
-                    <div className="bg-white shadow-md rounded-md p-4">
+                    <div style={{background:currentTheme.background}} className="shadow-md rounded-md p-4">
                         <h3 className="text-xl font-semibold mb-4">Selected Fees Summary</h3>
                         <ul className="space-y-2">
                             {schoolFees.filter(item => targetKeys.includes(item.key)).map(item => (

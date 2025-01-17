@@ -7,13 +7,14 @@ import {useEffect} from "react";
 import {getFromLocalStorage} from "../../../utils/LocalStorage/localStorage.jsx";
 import {createSchedule} from "../../../redux/Reducers/AdminSlice/scheduleSlice.js";
 import {useDispatch} from "react-redux";
+import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx";
 
 const ScheduleSetting = () => {
   const [form] = useForm();
 
   const initialValue= [{day:"",lessons:[{grade:"",subject:"",time:""}]}]
 
-
+    const {currentTheme} = useTheme()
     useEffect(() => {
         form.setFieldsValue({weekSchedule:initialValue})
     }, [form]);
@@ -70,6 +71,11 @@ const ScheduleSetting = () => {
         value:item
     }))
 
+    const selectStyles = {
+        backgroundColor: currentTheme.surface,
+        color: currentTheme.text,
+        borderColor: currentTheme.border,
+    }
 
     return(
       <>
@@ -82,12 +88,13 @@ const ScheduleSetting = () => {
               initialValues={{remember: true}}
               onFinish={onFormFinish}
               onFinishFailed={onFormFinishFailed}
+
           >
               <Form.List name={'weekSchedule'}>
                   {(fields, { add, remove })=>(
-                      <div className={'grid grid-cols-1 gap-4'} >
+                      <div  className={'grid grid-cols-1 gap-4'} >
                           {fields.map(({key,name,...restFields})=>(
-                              <div className="bg-gray-200 shadow-md alignCenter rounded-md p-4" key={key}>
+                              <div className="  alignCenter  p-4" key={key}>
                                   <Heading title={null} subtitle={`Day ${key+1} Activity`}/>
                                       <Form.Item
                                           {...restFields}
@@ -101,11 +108,15 @@ const ScheduleSetting = () => {
                                               tokenSeparators={[',']}
                                               options={Day}
                                               placeholder={"Select Day"}
+                                              style={selectStyles}
+                                              dropdownStyle={{
+                                                  backgroundColor: currentTheme.surface,
+                                              }}
                                           />
                                       </Form.Item>
                                   <Form.List name={[name,'lessons']}>
                                       {(fields,{add,remove})=>(
-                                          <dl className="divide-y divide-gray-400">
+                                          <dl className="">
                                               {fields.map(({key,name,...restFields})=>(
                                                   <div key={key} >
                                                       <div className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6'>
@@ -118,6 +129,10 @@ const ScheduleSetting = () => {
                                                                   options={grade}
                                                                   size={"large"}
                                                                   placeholder='Select Grade'
+                                                                  style={selectStyles}
+                                                                  dropdownStyle={{
+                                                                      backgroundColor: currentTheme.surface,
+                                                                  }}
                                                               />
                                                           </Form.Item>
 
@@ -131,6 +146,10 @@ const ScheduleSetting = () => {
                                                                   options={schoolSubjects}
                                                                   size={"large"}
                                                                   placeholder='Select subject'
+                                                                  style={selectStyles}
+                                                                  dropdownStyle={{
+                                                                      backgroundColor: currentTheme.surface,
+                                                                  }}
                                                               />
                                                           </Form.Item>
                                                           <Form.Item
@@ -142,6 +161,10 @@ const ScheduleSetting = () => {
                                                                   options={time}
                                                                   size={"large"}
                                                                   placeholder='Select Time'
+                                                                  style={selectStyles}
+                                                                  dropdownStyle={{
+                                                                      backgroundColor: currentTheme.surface,
+                                                                  }}
                                                               />
                                                           </Form.Item>
 

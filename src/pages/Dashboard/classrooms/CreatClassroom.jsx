@@ -1,24 +1,24 @@
 import Heading from "../../../components/heading/Heading.jsx";
-import {Form, Input, message, Select} from "antd";
+import {Form, message, Select} from "antd";
 import {useForm} from "antd/es/form/Form.js";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {readStaff} from "../../../redux/Reducers/AdminSlice/staffSlice.js";
-import {getFromLocalStorage} from "../../../utils/LocalStorage/localStorage.jsx";
-import {createClass} from "../../../redux/Reducers/AdminSlice/classSlice.js";
 import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx";
+import {BatchRequest} from "../../../redux/Reducers/AdminSlice/batchRequestSlice.js";
+import {getFromSessionStorage} from "../../../utils/LocalStorage/sessionStorage.jsx";
 
 const CreatClassroom = () => {
 
 
-    const {loading}=useSelector((state)=>state.classroom)
+    const {loading}=useSelector((state)=>state.batchRequests)
 
 
     const dispatch=useDispatch();
 
     const [form] = useForm();
     const [messageApi, contextHolder] = message.useMessage();
-    const user = getFromLocalStorage('user')
+    const user = getFromSessionStorage('user')
 
     const onFormFinishFailed = (errorInfo) => {
         // todo handle form finish fail
@@ -45,27 +45,40 @@ const CreatClassroom = () => {
     }, [staffList]);
 
 
+    const classRooms = [{label:"Play Group",value:"PlayGroup"},{label:"Pri-Primary One",value:"PP1"},{label:"Pri-Primary Two",value:"PP2"},
+        {label:"Grade One",value:"G1"},{label:"Grade Two",value:"G2"},{label:"Grade Three",value:"G3"},{label:"Grade Four",value:"G4"}
+        ,{label:"Grade Five",value:"G5"},{label:"Grade Six",value:"G6"},{label:"Grade Seven",value:"G7"},{label:"Grade Eight",value:"G8"},{label:"Grade Nine",value:"G9"}]
+
+
     const onFormFinish = async (values) => {
         // todo handle form finish
-
-
+        const classroomName = classRooms.find(item=>item.value ===values.classroomNo)
         const classTeacher = dataSource.find(item => item.value === values.classroomFacilitator)
-        const userData = {
-            ...values,
+        const classroomData = {
+            classroomNo:values.classroomNo,
+            classroomName:classroomName.label,
             classroomFacilitator:classTeacher?.label,
             employeeNo:classTeacher?.value,
             createdBy: user.employeeNo
         };
 
-        console.log(userData)
+        const requests = [
+            { method: "POST", url: `/classroom/create`, data: classroomData },
+            { method: "POST", url: `/classroom/timetable/create`, data: classroomData },
+            { method: "POST", url: `/classroom/attendance/create`, data: classroomData },
+        ]
 
-        await dispatch(createClass(userData)).then((action)=>{
-            if (action.error) {
-                messageApi.error(action.payload?.message);
-            } else {
-                messageApi.success(action.payload?.message).then(() => form.resetFields());
-            }
+
+        await dispatch(BatchRequest(requests)).then((result)=>{
+            result.error?
+                messageApi.error(result.payload.message):
+                result.payload?.responses.map(item => {
+                    if (item?.data.success) {
+                        messageApi.success(item?.data.message);
+                    }else messageApi.error(item?.data.message)
+                })
         })
+
     };
 
     const rules={
@@ -82,7 +95,6 @@ const CreatClassroom = () => {
         color: currentTheme.text,
         borderColor: currentTheme.border,
     }
-
 
     return(
         <>
@@ -101,18 +113,18 @@ const CreatClassroom = () => {
                         >
                             <div className='grid md:grid-cols-2 gap-6 py-4'>
                                 <Form.Item rules={rules.grade} label="Grade" name="classroomNo">
-                                    <Input
-                                        placeholder={'eg 1'}
-                                        className="border-2 border-gray-600 h-10 focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500 transition duration-150 ease-in-out"
-                                        size={"large"}/>
+                                    <Select
+                                        style={selectStyles}
+                                        dropdownStyle={{
+                                            backgroundColor: currentTheme.surface,
+                                        }}
+                                        placeholder={'Select Classroom'}
+                                        options={classRooms}
+                                        size={"large"}
+
+                                    />
                                 </Form.Item>
 
-                                <Form.Item rules={rules.gradeName} label="Grade Name" name="classroomName">
-                                    <Input
-                                        placeholder={'eg Grade One'}
-                                        className="border-2 border-gray-600 h-10 focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500 transition duration-150 ease-in-out"
-                                        size={"large"}/>
-                                </Form.Item>
                                 <Form.Item rules={rules.classTeacher} label="Class Teacher" name="classroomFacilitator">
                                     <Select
                                         style={selectStyles}

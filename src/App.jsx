@@ -1,7 +1,5 @@
 import './App.css';
 import { Route, Routes } from "react-router-dom";
-// import { useTheme } from "./context/ThemeContext/ThemeContext.jsx";
-import Login from "./pages/auth/Login.jsx";
 import PasswordRecovery from "./pages/auth/PasswordRecovery.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
 import ScheduleSetting from "./pages/Dashboard/Staff/ScheduleSetting.jsx";
@@ -13,7 +11,7 @@ import StaffList from "./pages/Dashboard/Staff/ViewStaff.jsx";
 import ToAnotherClass from './pages/Dashboard/Students/Transfer/ToAnotherClass.jsx';
 import ToAnotherSchool from "./pages/Dashboard/Students/Transfer/ToAnotherSchool.jsx";
 import MarkAttendance from "./pages/Dashboard/Students/Attendance/MarkAttendance.jsx";
-import FindLearner from "./pages/Dashboard/Students/FindLearner.jsx";
+// import FindLearner from "./pages/Dashboard/Students/FindLearner.jsx";
 import CreateDepartment from './pages/Dashboard/Department/CreatDepartment.jsx';
 import NewStaff from "./pages/Dashboard/Staff/NewStaff.jsx";
 import NewPatient from "./pages/Dashboard/Clinic/NewPatient.jsx";
@@ -32,6 +30,19 @@ import TeacherProfile from "./pages/Dashboard/Staff/Profile.jsx";
 import FeeStructure from "./pages/Dashboard/fee/FeeStructure.jsx";
 import FeeItemsList from "./pages/Dashboard/fee/feeItem/FeeItemsList.jsx";
 import DarkLoginPage from "./components/DarkThemeLogin.jsx";
+import CreateVacancy from "./pages/Dashboard/HumanResurce/Vacancies/CreateVacancy.jsx";
+import ViewVacancies from "./pages/Dashboard/HumanResurce/Vacancies/ViewVacancies.jsx";
+import Interviews from "./pages/Dashboard/HumanResurce/Interviews/Interviews.jsx";
+import NewComplaint from "./pages/Dashboard/HumanResurce/Compaints/NewComplaint.jsx";
+import ViewComplaints from "./pages/Dashboard/HumanResurce/Compaints/ViewComplaints.jsx";
+import NewPayroll from "./pages/Dashboard/HumanResurce/payroll/NewPayroll.jsx";
+import Payrolls from "./pages/Dashboard/HumanResurce/payroll/Payrolls.jsx";
+import LearnerProfile from "./components/Profile.jsx";
+import {NewAssessment} from "./pages/Dashboard/Assesment/NewAssessment.jsx";
+import ViewAssessments from "./pages/Dashboard/Assesment/ViewAssessments.jsx";
+import TermDates from "./pages/Dashboard/policies/termDates/TermDates.jsx";
+import CaptureScores from "./pages/Dashboard/Assesment/CaptureScores.jsx";
+import AssessmentReport from "./pages/Dashboard/Assesment/AssessmentReport.jsx";
 
 function App() {
   // const { light, dark, lightTheme } = useTheme();
@@ -39,6 +50,7 @@ function App() {
 
   return (
       <div style={{  minHeight: '100vh', display: "flex", alignItems: "center", justifyContent: "center" }} className="App">
+
         <Routes>
           <Route path="/login" element={<DarkLoginPage />} />
           <Route path="/getCode" element={<PasswordRecovery />} />
@@ -58,7 +70,7 @@ function App() {
               <Route path="/create-department" element={<CreateDepartment />} />
               <Route path="/new-staff" element={<NewStaff />} />
               <Route path="/new-patient" element={<NewPatient />} />
-              <Route path="/find-learner" element={<FindLearner />} />
+              <Route path="/find-learner" element={<LearnerProfile />} />
               <Route path="/mark-attendance" element={<MarkAttendance />} />
               <Route path="/add-book" element={<NewBook />} />
               <Route path="/create-course-book" element={<CreateCourseBook />} />
@@ -73,6 +85,18 @@ function App() {
               <Route path="/profile" element={<TeacherProfile />} />
               <Route path="/new-feeStructure" element={<FeeStructure />} />
               <Route path="/view-feeItem" element={<FeeItemsList />} />
+              <Route path='/new-vacancy' element={<CreateVacancy/>}/>
+              <Route path='/vacancies' element={<ViewVacancies/>}/>
+              <Route path='/interviews' element={<Interviews />}/>
+              <Route path='/new-complaint' element={<NewComplaint />}/>
+              <Route path='/complaints' element={<ViewComplaints />}/>
+              <Route path='/new-payroll' element={<NewPayroll />}/>
+              <Route path='/payrolls' element={<Payrolls />}/>
+              <Route path='/new-assessment' element={<NewAssessment />}/>
+              <Route path='/view-assessment' element={<ViewAssessments />}/>
+              <Route path='/capture-scores' element={<CaptureScores />}/>
+              <Route path={'/assessment-report'} element={<AssessmentReport/>} />
+              <Route path='/term-dates' element={<TermDates />}/>
             </Route>
           </Route>
         </Routes>

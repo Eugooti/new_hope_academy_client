@@ -1,7 +1,7 @@
 import Heading from "../../../components/heading/Heading.jsx";
 import {useForm} from "antd/es/form/Form.js";
 import {Button, Form, Input} from "antd";
-import {MinusOutlined, PlusOutlined} from "@ant-design/icons";
+import {MinusCircleOutlined, MinusOutlined, PlusOutlined} from "@ant-design/icons";
 import DatePickerWrapper from "../../../components/DatePicker/DatePickerWrapper.jsx";
 const LeaseBook = () => {
   const [form] = useForm();
@@ -48,22 +48,21 @@ const LeaseBook = () => {
                           <>
                               {fields.map(({key, name, ...restField}) => (
                                   <div key={key}>
+                                      <div className='grid grid-cols-10'>
+
                                       <Form.Item
                                           {...restField}
+                                          className='col-span-9'
                                           label="Book Id" name={[name, "bookId"]}>
                                           <Input
                                               className="border-2 border-gray-600 h-10 focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500 transition duration-150 ease-in-out"
-                                              size={"large"}/>                                      </Form.Item>
+                                              size={"large"}/>
+                                      </Form.Item>
 
                                       <div className='flex align-middle justify-center'>
-                                          <Form.Item className='w-1/2'>
-                                              <Button type="dashed" onClick={() => remove()} block
-                                                      icon={<MinusOutlined/>}>
-                                                  Remove Book
-                                              </Button>
-                                          </Form.Item>
+                                          <MinusCircleOutlined onClick={() => remove(name)} />
                                       </div>
-
+                                      </div>
                                   </div>
                               ))}
                               <Form.Item>

@@ -6,7 +6,7 @@ import {CRUDMethods} from "../../CRUD/index.js";
 export const createLearnerClinicRecord=createAsyncThunk(
     "clinic/create-learner",
     async (data,{rejectWithValue})=>{
-        return await CRUDMethods.create(data,'/clinic/create',{rejectWithValue})
+        return await CRUDMethods.create(data,'/learnerService/clinic/create',{rejectWithValue})
 
     }
 )

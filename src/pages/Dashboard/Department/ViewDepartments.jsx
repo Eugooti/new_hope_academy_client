@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Form, Input, message, Popconfirm, Select, Skeleton, Table, Typography} from 'antd';
+import {Form, Input, message, Popconfirm, Select, Table, Typography} from 'antd';
 import {useDispatch, useSelector} from "react-redux";
 import {
     deleteDepartment,
@@ -92,7 +92,7 @@ const ViewDepartments = () => {
 
     const dispatch = useDispatch();
 
-    const {departments,loading} = useSelector((state)=>state.department)
+    const {departments} = useSelector((state)=>state.department)
     const [departmentData, setDepartmentData] = useState();
     useEffect(() => {
         if (departments && departments.success){

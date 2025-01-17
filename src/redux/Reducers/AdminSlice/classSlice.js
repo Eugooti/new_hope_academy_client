@@ -38,6 +38,14 @@ export const addLearnerToClass=createAsyncThunk(
     }
 )
 
+export const transferLearner=createAsyncThunk(
+    "classroom/transfer",
+    async ({grade,data},{rejectWithValue})=>{
+        return await CRUDMethods.update(data,`learners/update/${grade}`,{rejectWithValue})
+
+    }
+)
+
 const classSlice=createSlice({
     name:"Classes",
     initialState:initialState.classrooms,

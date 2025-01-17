@@ -15,8 +15,12 @@ import learnerSlice from "./Reducers/AdminSlice/LearnerSlice.js";
 import attendanceSlice from "./Reducers/AdminSlice/attendanceSlice.js";
 import feeSlice from "./Reducers/AdminSlice/FeeSlice.js";
 import scheduleSlice from "./Reducers/AdminSlice/scheduleSlice.js";
-import vacanciesSlice from "./Reducers/hrmSlice/vacanciesSlice.js";
 import batchRequests from './Reducers/AdminSlice/batchRequestSlice.js'
+import vacancySlice from "./Reducers/hrmSlice/vacancySlice.js";
+import complaintsSlice from "./Reducers/hrmSlice/complaintsSlice.js";
+import payrollSlice from "./Reducers/hrmSlice/payrollSlice.js";
+import interviewsSlice from "./Reducers/hrmSlice/interviewsSlice.js";
+import assessmentSlice from "./Reducers/AdminSlice/assessmentSlice.js";
 
 
 const rootReducers = combineReducers({
@@ -35,8 +39,12 @@ const rootReducers = combineReducers({
     attendance:attendanceSlice,
     fee:feeSlice,
     schedule:scheduleSlice,
-    vacancies:vacanciesSlice,
-    batchRequests:batchRequests
+    batchRequests:batchRequests,
+    vacancies:vacancySlice,
+    complaints:complaintsSlice,
+    payroll:payrollSlice,
+    interview:interviewsSlice,
+    assessment:assessmentSlice
 });
 
 export default (state = initialState, action) => rootReducers(state, action);

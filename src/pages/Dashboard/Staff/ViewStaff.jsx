@@ -8,7 +8,7 @@ import { readStaff } from "../../../redux/Reducers/AdminSlice/staffSlice.js";
 
 const StaffList = () => {
     const dispatch = useDispatch();
-    const { error, staffList } = useSelector((state) => state.staff);
+    const {  staffList } = useSelector((state) => state.staff);
 
     useEffect(() => {
         dispatch(readStaff());

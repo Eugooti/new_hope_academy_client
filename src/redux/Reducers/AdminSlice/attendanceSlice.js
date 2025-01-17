@@ -4,8 +4,8 @@ import {CRUDMethods} from "../../CRUD/index.js";
 
 export const createLearnerAttendanceRecord=createAsyncThunk(
     "create/attendance",
-    async (data,{rejectWithValue})=>{
-        return await CRUDMethods.create(data,"/attendance/create",{rejectWithValue})
+    async ({id,learnerData},{rejectWithValue})=>{
+        return await CRUDMethods.create(learnerData, `/classroom/attendance/addLearner/${id}`, {rejectWithValue});
     }
 )
 

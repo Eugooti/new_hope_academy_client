@@ -125,6 +125,12 @@ const initialState={
         loading:false,
         error:null,
         response:null
+    },
+    assessments:{
+        loading:false,
+        assessment:null,
+        assessments: null,
+        error:null
     }
 
 }

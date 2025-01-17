@@ -9,7 +9,7 @@ export const create = async (data,url,{rejectWithValue}) => {
           data
       })
 
-      if (status === 200) return result;
+      if (status >= 200 && status < 300) return result; // Handle 200-299 status codes
       return rejectWithValue(result);
 
   }catch(err) {

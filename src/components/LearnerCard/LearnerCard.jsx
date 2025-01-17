@@ -1,7 +1,6 @@
 import Text from "antd/es/typography/Text.js";
-import {useTheme} from "../../context/ThemeContext/ThemeContext2.jsx";
+// eslint-disable-next-line react/prop-types
 const LearnerCard = ({name,Img,grade,to}) => {
-    const {currentTheme} = useTheme()
 
 
   return(

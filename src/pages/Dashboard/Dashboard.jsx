@@ -3,8 +3,9 @@ import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {Layout, Menu, Button, ConfigProvider} from 'antd';
 import { getFromLocalStorage } from "../../utils/LocalStorage/localStorage.jsx";
 import {
+    BookOutlined, CalendarOutlined,
     MenuFoldOutlined,
-    MenuUnfoldOutlined, MoneyCollectOutlined,
+    MenuUnfoldOutlined, MoneyCollectOutlined, UserSwitchOutlined,
 } from '@ant-design/icons';
 import SchoolIcon from '@mui/icons-material/School';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -79,7 +80,7 @@ export const DashboardProvider = () => {
             getItem('Admit Learner', '2', <PersonAddIcon />, null, '/admit-learner'),
             getItem('Learner Attendance', 'sub2', <CheckCircleOutlineIcon />, [
                 getItem('Mark Attendance', '3', null, null, '/mark-attendance'),
-                getItem('View Attendance', '4', null, null, '/view-attendance')
+                // getItem('View Attendance', '4', null, null, '/view-attendance')
             ]),
             getItem('Transfer Learner', 'sub3', <TransferWithinAStationIcon />, [
                 getItem('To another class', '5', null, null, '/transfer-to-class'),
@@ -91,9 +92,14 @@ export const DashboardProvider = () => {
             getItem('New Staff', '8', <PersonAddAlt1Icon />, null, '/new-staff'),
             getItem('View Staff', '9', <ListIcon />, null, '/view-staff')
         ]),
-        getItem('classrooms', 'sub5', <ClassIcon />, [
+        getItem('Classrooms', 'sub5', <ClassIcon />, [
             getItem('Create Class', '10', null, null, '/create-class'),
             getItem('View Class', '11', null, null, '/view-class')
+        ]),
+        getItem('Assessment','sub16',<BookOutlined/>,[
+            getItem('New Assessment', '39', null, null, '/new-assessment'),
+            getItem('View Assessments', '40', null, null, '/view-assessment'),
+            getItem('Learner Assessment', '41', null, null, '/view-assessment'),
         ]),
         getItem('Library', 'sub6', <LocalLibraryIcon />, [
             getItem('Add book', '12', <ImportContactsIcon />, null, '/add-book'),
@@ -125,6 +131,26 @@ export const DashboardProvider = () => {
             getItem('Create Department', '23', null, null, '/create-department'),
             getItem('View Departments', '25', null, null, '/view-departments')
         ]),
+        getItem("Human Resource","sub12",<UserSwitchOutlined/>,[
+            getItem("Vacancies","sub13",null,[
+                getItem("Create Vacancy",'31',null,null,"/new-vacancy"),
+                getItem("View Vacancy",'32',null,null,"/vacancies")
+            ]),
+            getItem("Interviews",'33',null,null,'/interviews'),
+            getItem("Complaints",'sub14',null,[
+                getItem("New Complaints",'34',null,null,'/new-complaint'),
+                getItem("View Complaints",'35',null,null,'/complaints'),
+            ]),
+            getItem("Payroll","sub15",null,[
+                getItem("New Payroll",'36',null,null,'/new-payroll'),
+                getItem("View Payrolls",'37',null,null,'/payrolls'),
+            ]),
+            getItem("Staff Attendance",'38',null,null,'/payrolls'),
+        ]),
+        getItem("School Policies","sub17",<CalendarOutlined/>,[
+            getItem("Term Dates","42",null,null,'/term-dates'),
+            getItem("Day Activities","43",null,null,'/day-activities'),
+        ])
     ];
 
     const findPath = (key, items) => {
@@ -181,6 +207,7 @@ export const DashboardProvider = () => {
                     },
                 }}
             >
+
                 <Layout hasSider style={{background:currentTheme.background}}>
                     <div className='pl-5 py-3' style={{ height: "100%" }}>
                         <Sider
@@ -270,7 +297,7 @@ export const DashboardProvider = () => {
                                 color: currentTheme.text,
                             }}
                         >
-                            Ant Design ©{new Date().getFullYear()} Created by Ant UED
+                            Eugene Ochieng ©{new Date().getFullYear()} Created by Ant Eugooti
                         </Footer>
                     </Layout>
                 </Layout>

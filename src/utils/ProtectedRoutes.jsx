@@ -2,6 +2,7 @@
 
 import { Navigate, Outlet,useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import {getFromSessionStorage} from "./LocalStorage/sessionStorage.jsx";
 
 const ProtectedRoute = () => {
 
@@ -10,7 +11,7 @@ const ProtectedRoute = () => {
     const { isLoggedIn } = useSelector(state => state.auth);
 
     // Check if logged in and token exists in localStorage
-    const isAuthenticated = isLoggedIn || localStorage.getItem('token');
+    const isAuthenticated = isLoggedIn || getFromSessionStorage('token');
 
     return isAuthenticated ? <Outlet /> : <Navigate to="/login" state={{from:location}} replace />;
 };

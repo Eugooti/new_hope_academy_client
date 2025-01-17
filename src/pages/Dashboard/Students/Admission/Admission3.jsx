@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import {getFromLocalStorage, removeItem, setLocalStorage} from "../../../../utils/LocalStorage/localStorage.jsx";
 import {Button, Form, Input, message, Select} from "antd";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "antd/es/form/Form.js";
@@ -8,13 +7,14 @@ import Heading from "../../../../components/heading/Heading.jsx";
 import {PlusOutlined} from "@ant-design/icons";
 import {useDispatch} from "react-redux";
 import {admitLearner} from "../../../../redux/Reducers/AdminSlice/LearnerSlice.js";
-import {createLearnerLibraryRecord} from "../../../../redux/Reducers/appSlice/booksBorrowingSlice.js";
-import {createLearnerClinicRecord} from "../../../../redux/Reducers/AdminSlice/clinicSlice.js";
-import {createLearnerAttendanceRecord} from "../../../../redux/Reducers/AdminSlice/attendanceSlice.js";
 import {Step, StepLabel, Stepper} from "@mui/material";
-import {addLearnerToClass} from "../../../../redux/Reducers/AdminSlice/classSlice.js";
 import {useTheme} from "../../../../context/ThemeContext/ThemeContext2.jsx";
 import {BatchRequest} from "../../../../redux/Reducers/AdminSlice/batchRequestSlice.js";
+import {
+    getFromSessionStorage,
+    removeSessionItem,
+    setSessionStorage
+} from "../../../../utils/LocalStorage/sessionStorage.jsx";
 
 
 const medicalConditions = [
@@ -29,11 +29,10 @@ const medicalConditionsObjects = medicalConditions.map(condition => ({
     value: condition
 }));
 
-const grades = [
-    { label: "One", value: 1 }, { label: "Two", value: 2 }, { label: "Three", value: 3 },
-    { label: "Four", value: 4 }, { label: "Five", value: 5 }, { label: "Six", value: 6 },
-    { label: "Seven", value: 7 }, { label: "Eight", value: 8 }, { label: "Nine", value: 9 },
-];
+const grades = [{label:"Play Group",value:"PlayGroup"},{label:"Pri-Primary One",value:"PP1"},{label:"Pri-Primary Two",value:"PP2"},
+    {label:"Grade One",value:"G1"},{label:"Grade Two",value:"G2"},{label:"Grade Three",value:"G3"},{label:"Grade Four",value:"G4"}
+    ,{label:"Grade Five",value:"G5"},{label:"Grade Six",value:"G6"},{label:"Grade Seven",value:"G7"},{label:"Grade Eight",value:"G8"},{label:"Grade Nine",value:"G9"}]
+
 
 const disability = ["Yes","No"].map(item =>({
     label:item,
@@ -48,7 +47,7 @@ const StudentAdmission = () => {
         { title: 'Create learner records', content: 'Last-content' },
     ];
 
-    const [current, setCurrent] = useState(getFromLocalStorage('step') || 0);
+    const [current, setCurrent] = useState(getFromSessionStorage('step') || 0);
     const [form] = useForm();
     const [form1] = useForm();
 
@@ -59,8 +58,8 @@ const StudentAdmission = () => {
 
 
     useEffect(() => {
-        const savedStudent = getFromLocalStorage('student');
-        const savedParents = getFromLocalStorage('parent');
+        const savedStudent = getFromSessionStorage('student');
+        const savedParents = getFromSessionStorage('parent');
 
         if (savedStudent) {
             setStudent(savedStudent);
@@ -79,19 +78,19 @@ const StudentAdmission = () => {
     const next = () => {
         if (current < steps.length - 1) {
             setCurrent(current + 1);
-            setLocalStorage('step', current + 1);
+            setSessionStorage('step', current + 1);
         }
     };
 
     const prev = () => {
         if (current > 0) {
             setCurrent(current - 1);
-            setLocalStorage('step', current - 1);
+            setSessionStorage('step', current - 1);
         }
     };
 
     const onFormFinish = (values) => {
-        setLocalStorage('student', values);
+        setSessionStorage('student', values);
         setStudent(values);
         next();
     };
@@ -102,7 +101,7 @@ const StudentAdmission = () => {
         if (values.parents === null || values.parents===undefined || values.parents.length===0){
             messageApi.warning("Parents Details Required")
         }else {
-            setLocalStorage('parent', values.parents);
+            setSessionStorage('parent', values.parents);
             setParents(values.parents);
             next();
         }
@@ -111,7 +110,7 @@ const StudentAdmission = () => {
     };
     const dispatch=useDispatch();
 
-    const user=getFromLocalStorage('user')
+    const user=getFromSessionStorage('user')
     const overallFinish = async () => {
         const newLearner={
             ...student,
@@ -119,29 +118,25 @@ const StudentAdmission = () => {
             admittedBy: user?.employeeNo
         }
         await dispatch(admitLearner(newLearner)).then((action) => {
-            console.log(action)
             if (action.error) {
                 messageApi.error(action.payload?.message);
             } else {
                 messageApi.success(action.payload?.message).then(()=>{
                     form.resetFields()
-                    removeItem("parent")
-                    removeItem("student")
-                    setLocalStorage("admitted",action.payload)
+                    removeSessionItem("parent")
+                    removeSessionItem("student")
+                    setSessionStorage("admitted",action.payload)
                     next()
                 })
             }
         });
     };
 
-    const admittedLearner=getFromLocalStorage("admitted")
+    const admittedLearner=getFromSessionStorage("admitted")
 
 
     const navigate=useNavigate();
-    const final = async () => {
-      removeItem('step')
-        navigate('/fee-setting')
-    }
+
 
 
     const handleDateRangeChange = (value) => {
@@ -154,85 +149,6 @@ const StudentAdmission = () => {
     }));
 
 
-    const library = async () => {
-        const learnerData={
-            studentsId: admittedLearner?.result?.studentId,
-            studentNames:`${admittedLearner?.result?.first_name} ${admittedLearner?.result?.last_name}`,
-            grade: admittedLearner?.result?.grade
-        }
-        await dispatch(createLearnerLibraryRecord(learnerData)).then((action)=>{
-            console.log(action)
-            if (action.error) {
-                messageApi.error(action.payload?.message);
-            } else {
-                messageApi.success(action.payload?.message).then(()=>{
-                    console.log(action)
-                })
-            }
-        })
-    }
-
-    const clinic = async () => {
-        const learnerData={
-            studentsId: admittedLearner?.result?.studentId,
-            studentNames:`${admittedLearner?.result?.first_name} ${admittedLearner?.result?.last_name}`,
-            grade: admittedLearner?.result?.grade,
-            gender: admittedLearner?.result?.gender,
-            createdBy: user?.email
-        }
-
-        await dispatch(createLearnerClinicRecord(learnerData)).then((action)=>{
-            console.log(action)
-            if (action.error) {
-                messageApi.error(action.payload?.message);
-            } else {
-                messageApi.success(action.payload?.message).then(()=>{
-                    console.log(action)
-                })
-            }
-        })
-
-    }
-
-    const attendance = async () => {
-        const learnerData={
-            studentId: admittedLearner?.result?.studentId,
-            studentNames:`${admittedLearner?.result?.first_name} ${admittedLearner?.result?.last_name}`,
-            grade: admittedLearner?.result?.grade,
-            gender: admittedLearner?.result?.gender,
-
-        }
-
-        await dispatch(createLearnerAttendanceRecord(learnerData)).then((action)=>{
-            console.log(action)
-            if (action.error) {
-                messageApi.error(action.payload?.message);
-            } else {
-                messageApi.success(action.payload?.message).then(()=>{
-                    console.log(action)
-                })
-            }
-        })
-
-    }
-
-    const addToClass = async () => {
-        const learnerData={
-            studentId: admittedLearner?.result?.admNo,
-            firstName:admittedLearner?.result?.firstName ,
-            lastName:admittedLearner?.result?.lastName,
-            gender: admittedLearner?.result?.gender,
-        }
-      const grade = admittedLearner?.result?.grade
-
-        await dispatch(addLearnerToClass({grade,learnerData})).then((action)=>{
-            console.log(action)
-            action.error?
-                messageApi.error(action.payload.message):
-                messageApi.success(action.payload.message)
-        })
-
-    }
 
     const {currentTheme} = useTheme()
 
@@ -245,32 +161,51 @@ const StudentAdmission = () => {
 
     const addLearnerData = async ()=>{
         const classroom = admittedLearner?.result?.classroom
-
-        const classroomData = {
-            name:`${admittedLearner?.result?.firstName} ${admittedLearner?.result?.lastName}`,
-            admNo:admittedLearner?.result?.admNo,
-            gender:admittedLearner?.result?.gender
+        const classroomData={
+            admNo: admittedLearner?.result?.admNo,
+            name:`${admittedLearner?.result?.firstName} ${admittedLearner?.result?.lastName}` ,
+            gender: admittedLearner?.result?.gender,
         }
-
-        const classroomAttendance = {
+        const classroomAttendance={
+            admNo: admittedLearner?.result?.admNo,
             fullName:`${admittedLearner?.result?.firstName} ${admittedLearner?.result?.lastName}`,
-            admNo:admittedLearner?.result?.admNo,
-        }
+            gender: admittedLearner?.result?.gender,
+            attendanceRecord:[
+                {present:true,markedBy:user?.employeeNo},
+            ]
 
-        const medicalRecord = {
+        }
+        const clinicRecord = {
             fullName:`${admittedLearner?.result?.firstName} ${admittedLearner?.result?.lastName}`,
             admNo:admittedLearner?.result?.admNo,
             classroom: admittedLearner?.result?.classroom,
+            gender: admittedLearner?.result?.gender,
         }
-
-
         const requests = [
             { method: "PUT", url: `/classroom/addLearner/${classroom}`, data: classroomData },
-            { method: "POST", url: `/learnerService/clinic/create`, data: medicalRecord },
+            { method: "POST", url: `/classroom/attendance/addLearner/${classroom}`, data: classroomAttendance },
+            { method: "POST", url: `/learnerService/clinic/create`, data: clinicRecord },
         ];
 
         await dispatch(BatchRequest(requests)).then((result)=>{
-            console.log(result)
+            if (result.error){
+                messageApi.error(result.payload.message)
+
+            }else {
+                if (result.payload?.responses[2].status === 400|| result.payload?.responses[2].status === 200){
+                    if (result.payload?.responses[0].status===200 && result.payload?.responses[1].status===200  ){
+                        messageApi.success("Records added successfully").then(()=>{
+                            navigate("/succ")
+                            removeSessionItem("admitted")
+                            removeSessionItem("step")
+                        });
+                    }
+                }
+
+
+
+            }
+
         })
     }
 
@@ -615,17 +550,8 @@ const StudentAdmission = () => {
                         </div>
 
                     </dl>
-                    <div className='flex align-middle justify-around pb-4'>
-                        <Button type='dashed' onClick={clinic}>Clinic Record</Button>
-                        <Button type='dashed' onClick={library}>Library Record</Button>
-                        <Button type='dashed' onClick={attendance}>Attendance Record</Button>
-                        <Button type='dashed' onClick={addToClass}>Add To Class</Button>
-                    </div>
                     <div className="flex justify-end">
                         <Button type="primary" className='w-24' onClick={addLearnerData}>Finish</Button>
-                        <Button style={{ margin: '0 8px' }} onClick={prev}>
-                            Previous
-                        </Button>
                     </div>
 
                 </div>

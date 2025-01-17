@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import {getFromSessionStorage, setSessionStorage} from "../../utils/LocalStorage/sessionStorage.jsx";
 
 const ThemeContext = createContext(undefined);
 
@@ -32,10 +33,16 @@ export const ThemeProvider = ({ children }) => {
         success: '#73d13d'
     });
 
-    const [isDarkTheme, setIsDarkTheme] = useState(false);
+    const selectedTheme = getFromSessionStorage('isDarkTheme');
+
+    const [isDarkTheme, setIsDarkTheme] = useState(selectedTheme|| false);
 
     const toggleTheme = () => {
-        setIsDarkTheme(!isDarkTheme);
+        setIsDarkTheme((prevTheme) => {
+            const newTheme = !prevTheme;
+            setSessionStorage('isDarkTheme', newTheme);
+            return newTheme;
+        });
     };
 
     const currentTheme = isDarkTheme ? dark : light;

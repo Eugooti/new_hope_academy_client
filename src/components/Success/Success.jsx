@@ -10,7 +10,7 @@ const Success = () => {
         <Result
             status="success"
             title="Learner have been admitted successfully!"
-            subTitle={"Hostel"}
+            subTitle={"Welcome"}
             extra={[
                 <button onClick={()=>navigate("/fee-setting")} className={"bg-gray-800 text-lg text-white hover:bg-gray-900  h-11 w-44 rounded-3xl"}
                         type="primary" key="console">

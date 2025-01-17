@@ -1,8 +1,8 @@
 import {createSlice,createAsyncThunk} from "@reduxjs/toolkit";
 import initialState from "../state.js";
 import {makeRequest} from "../../utils/Requests/Requests.js";
-import {setLocalStorage} from "../../utils/LocalStorage/localStorage.jsx";
-
+import {setSessionStorage} from "../../utils/LocalStorage/sessionStorage.jsx";
+import {CRUDMethods} from "../CRUD/index.js"
 export const login=createAsyncThunk(
     "auth/login",
     async (loginData,{rejectWithValue})=>{
@@ -25,6 +25,12 @@ export const login=createAsyncThunk(
     }
 )
 
+export const logout = createAsyncThunk(
+    'auth/logout',
+    async (_,{rejectWithValue})=>{
+        return await CRUDMethods.read('/auth/logout',{rejectWithValue})
+    }
+)
 
 export const recoveryCode=createAsyncThunk(
     "auth/recovery",
@@ -108,8 +114,9 @@ const authSlice=createSlice({
                 state.isLoggedIn=true;
                 state.user=action.payload
                 state.error=null;
-                setLocalStorage("token",action.payload.token)
-                setLocalStorage("user",action.payload.user)
+                setSessionStorage('user',action.payload.user)
+                setSessionStorage("token",action.payload.token)
+                setSessionStorage("refreshToken",action.payload.refreshToken)
             })
             .addCase(recoveryCode.pending,(state)=>{
                 state.loading=true;
@@ -132,6 +139,23 @@ const authSlice=createSlice({
             .addCase(updatePassword.pending,(state)=>{
                 state.loading=true;
             })
+            .addCase(logout.pending,state => {
+                state.loading=true
+                state.error=null
+                state.user=null
+            })
+            .addCase(logout.rejected,(state,action) => {
+                state.loading=false
+                state.error=action.payload
+                state.user=null
+            })
+            .addCase(logout.fulfilled,(state) => {
+                state.loading=false
+                state.error=null
+                state.user=null
+                state.isLoggedIn=false;
+            })
+
     }
 })
 

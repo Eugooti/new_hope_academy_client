@@ -7,6 +7,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {getFromLocalStorage} from "../../../utils/LocalStorage/localStorage.jsx";
 import {useNavigate} from "react-router-dom";
 import {readUserSchedule} from "../../../redux/Reducers/AdminSlice/scheduleSlice.js";
+import {getFromSessionStorage} from "../../../utils/LocalStorage/sessionStorage.jsx";
+import {useTheme} from "../../../context/ThemeContext/ThemeContext2.jsx";
 
 
 const { Title, Text } = Typography;
@@ -46,7 +48,7 @@ const TeacherProfile = () => {
 
     const dispatch=useDispatch();
 
-    const user=getFromLocalStorage('user')
+    const user=getFromSessionStorage('user')
     const [messageApi, contextHolder] = message.useMessage();
     const {loading}=useSelector((state) => state.staff)
 
@@ -86,6 +88,7 @@ const TeacherProfile = () => {
 
     }, [userSchedules]);
 
+    const {currentTheme} = useTheme()
 
     return (
         <div className="p-4">
@@ -94,8 +97,8 @@ const TeacherProfile = () => {
                 <div className="flex items-center space-x-4 mb-4">
                     <Avatar size={100} src={dp} />
                     <div>
-                        <Title level={3} className="mb-0">{`${user?.firstname} ${user?.lastName}`}</Title>
-                        <Text type="secondary">{teacher.designation}</Text>
+                        <Title level={3} style={{color:currentTheme.text}} className="mb-0">{`${user?.firstname} ${user?.lastName}`}</Title>
+                        <Text style={{color:currentTheme.text}} type="secondary">{teacher.designation}</Text>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

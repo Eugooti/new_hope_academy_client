@@ -1,4 +1,3 @@
-
 import {useEffect, useRef, useState} from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import {Button, Input, Popconfirm, Space, Table} from 'antd';
@@ -6,6 +5,25 @@ import Highlighter from 'react-highlight-words';
 import Heading from "../../../components/heading/Heading.jsx";
 import {useDispatch,useSelector} from "react-redux";
 import {readClasses} from "../../../redux/Reducers/AdminSlice/classSlice.js";
+import { createStyles } from 'antd-style';
+import {ClassroomPDF} from "../../../utils/PDFDownload/PdfDownloads.js";
+
+const useStyle = createStyles(({ css, token }) => {
+    const { antCls } = token;
+    return {
+        customTable: css`
+            ${antCls}-table {
+                ${antCls}-table-container {
+                    ${antCls}-table-body,
+                    ${antCls}-table-content {
+                        scrollbar-width: thin;
+                        scrollbar-color: unset;
+                    }
+                }
+            }
+        `,
+    };
+});
 
 const AllClasses = () => {
 
@@ -24,17 +42,15 @@ const AllClasses = () => {
             const formatData = classroomList?.result.map((classroom,index) => ({
                 key: index,
                 name:classroom.classroomName,
-                gender: classroom.classroomFacilitator,
+                classTeacher: classroom.classroomFacilitator,
                 male:classroom.population.male,
-                female:classroom.population.male,
-                total:classroom.population.male,
+                female:classroom.population.female,
+                total:classroom.population.total,
             }))
 
             setDataSource(formatData)
         }
     },[classroomList])
-
-
 
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -154,40 +170,37 @@ const AllClasses = () => {
             title: 'Grade',
             dataIndex: 'name',
             key: 'name',
-            width: '15%',
+            fixed: 'left',
             ...getColumnSearchProps('name'),
         },
         {
             title: 'Class Teacher',
-            dataIndex: 'gender',
+            dataIndex: 'classTeacher',
             key: 'gender',
-            width: '30%',
             ...getColumnSearchProps('gender'),
         },
         {
             title: 'Male',
             dataIndex: 'male',
             key: 'male',
-            width: '12%'
 
         },
         {
             title: 'Female',
             dataIndex: 'female',
             key: 'female',
-            width: '12%'
 
         },
         {
             title: 'Total',
             dataIndex: 'total',
             key: 'total',
-            width: '12%'
 
         },
 
         {
-            title: 'Absent',
+            title: 'Action',
+            fixed: 'right',
             dataIndex: 'operation',
             render: (_, record) =>
                 dataSource.length >= 1 ? (
@@ -199,10 +212,31 @@ const AllClasses = () => {
                 ) : null,
         },
     ];
+    const { styles } = useStyle();
+
+
     return (
         <>
             <Heading title={"Class Data"} subtitle={"Class Information"}/>
-            <Table className='pt-5' columns={columns} bordered dataSource={dataSource} />
+
+            <div className='flex justify-end align-middle pb-4'>
+
+                <Button onClick={async () => {
+                    if (dataSource.length > 0) {
+                    await ClassroomPDF(dataSource);
+                } else {
+                    console.log("Data source is empty");
+                }
+                }}
+                        type="dashed">Download Classroom Data</Button>
+            </div>
+
+            <Table
+                className={styles.customTable}
+                scroll={{
+                    x: 'max-content',  // Enables horizontal scrolling
+                }}
+                columns={columns} bordered dataSource={dataSource} />
 
         </>
 

@@ -21,7 +21,7 @@ const DarkLoginPage = () => {
         // todo handle form finish
         await dispatch(login(values)).then((action)=>{
             action.error?
-                messageApi.error(z):
+                messageApi.error(action.payload.message):
                 messageApi.success(action.payload.message).then(()=>navigate(from))
         })
     };

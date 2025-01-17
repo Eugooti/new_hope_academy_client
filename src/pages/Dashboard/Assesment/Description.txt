@@ -1,0 +1,6 @@
+This handle matters exam. The main functions will include:
+ i. Scheduling exams.
+ ii. Capturing learner scores.
+ iii. Printing learner reports.
+
+ 07

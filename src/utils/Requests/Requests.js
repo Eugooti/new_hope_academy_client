@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getFromLocalStorage, removeItem, setLocalStorage } from "../LocalStorage/localStorage.jsx";
+import {getFromSessionStorage, removeSessionItem, setSessionStorage} from "../LocalStorage/sessionStorage.jsx";
 
 // Base URL for API
 export const BASE_URL = 'http://localhost:4600/nha';
@@ -7,6 +7,7 @@ export const BASE_URL = 'http://localhost:4600/nha';
 // Create an axios instance with base URL and default headers
 export const instance = axios.create({
     baseURL: BASE_URL,
+    withCredentials: true,  // Ensure cookies are sent with requests
     headers: {
         "accept": "/",
     },
@@ -14,7 +15,7 @@ export const instance = axios.create({
 
 // Utility function to remove user data from local storage and navigate to login
 const navigateToLogin = async () => {
-    await removeItem('user');
+    await removeSessionItem('user');
     window.location.href = "/login";
 };
 
@@ -26,6 +27,16 @@ const setSkipUserUpdateFlag = () => {
 // Function to check if user update should be skipped
 const shouldSkipUserUpdate = () => {
     return localStorage.getItem('skipUserUpdate') === 'true';
+};
+
+// Function to refresh access token
+const refreshAccessToken = async () => {
+    try {
+        return await instance.post('/auth/refresh-token');
+    } catch (error) {
+        console.error('Error refreshing access token:', error);
+        return null;
+    }
 };
 
 // Axios interceptor to handle responses and errors
@@ -43,9 +54,15 @@ instance.interceptors.response.use(
     async error => {
         const status = error.response?.status;
         if (status === 401) {
-            if (window.location.pathname !== "/login") {
-                await navigateToLogin();
+            const newAccessToken = await refreshAccessToken();
+            if (newAccessToken.status===200){
+                const originalRequest = error.config;
+                return instance(originalRequest);
+            }else {
+                await navigateToLogin()
             }
+        }else if (status === 403) {
+            await navigateToLogin()
         }
         return Promise.reject(error);
     }
@@ -53,8 +70,8 @@ instance.interceptors.response.use(
 
 // Function to make HTTP request
 const makeRequest = async ({ url, method, data = null, use_jwt = false }) => {
-    const token = getFromLocalStorage('token');
-    const user = getFromLocalStorage('user');
+    const token = getFromSessionStorage('token');
+    const user = getFromSessionStorage('user');
 
     const headers = {
         "content-type": "application/json",
@@ -87,9 +104,9 @@ const makeRequest = async ({ url, method, data = null, use_jwt = false }) => {
         }
     } finally {
         if (!shouldSkipUserUpdate()) {
-            setLocalStorage('user', user);
+            setSessionStorage('user', user);
         } else {
-            removeItem('skipUserUpdate');
+            removeSessionItem('skipUserUpdate');
         }
     }
 };
@@ -99,8 +116,8 @@ const makeRequest = async ({ url, method, data = null, use_jwt = false }) => {
 
 // New function to make batch request
 const makeBatchRequest = async (requests) => {
-    const token = getFromLocalStorage('token');
-    const user = getFromLocalStorage('user');
+    const token = getFromSessionStorage('token');
+    const user = getFromSessionStorage('user');
 
     const headers = {
         "content-type": "application/json",
@@ -140,9 +157,9 @@ const makeBatchRequest = async (requests) => {
         }
     } finally {
         if (!shouldSkipUserUpdate()) {
-            setLocalStorage('user', user);
+            setSessionStorage('user', user);
         } else {
-            removeItem('skipUserUpdate');
+            removeSessionItem('skipUserUpdate');
         }
     }
 };
